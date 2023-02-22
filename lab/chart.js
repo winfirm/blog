@@ -337,7 +337,7 @@ function reload_symbols(){
 	type:'get',
 	url:url,
 	data:'',
-	headers: {'Access-Control-Allow-Origin':'https://winfirm.net','Access-Control-Allow-Credentials':'true'},
+	headers: {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Credentials':'true'},
 	success: function(result ) {
 		  let obj = JSON.parse(result);		  
 		  let array= obj.forex;
