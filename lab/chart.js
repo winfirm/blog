@@ -331,7 +331,7 @@ function refresh_data(symbol,times){
 }
 
 function reload_symbols(){
-	let url = '/serv/chart_symbols';
+	let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
 	console.log(url)
 	$.ajax({
 	type:'get',
