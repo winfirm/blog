@@ -337,7 +337,7 @@ function reload_symbols(){
 	type:'get',
 	url:url,
 	data:'',
-	headers: {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Method':'GET','Access-Control-Allow-Headers':'x-requested-with,content-type'},
+	headers: {'Access-Control-Allow-Origin':'*'},
 	success: function(result ) {
 		  let obj = JSON.parse(result);		  
 		  let array= obj.forex;
