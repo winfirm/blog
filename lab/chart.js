@@ -336,8 +336,9 @@ function reload_symbols(){
 	$.ajax({
 	type:'GET',
 	url:url,
+	dataType:'json',
 	data:'',
-	headers: {'Access-Control-Allow-Origin':'*'},
+	traditional: true,
 	success: function(result ) {
 		  let obj = JSON.parse(result);		  
 		  let array= obj.forex;
