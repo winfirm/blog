@@ -336,7 +336,6 @@ function reload_symbols(){
 	$.ajax({
 	type:'GET',
 	url:url,
-	dataType:'json',
 	data:'',
 	traditional: true,
 	success: function(result ) {
