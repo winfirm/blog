@@ -316,12 +316,13 @@ function refresh_data(symbol,times){
     isloading=true;
   reset_element('chart1')
   
-  let url = '/serv/index_json?symbol='+symbol+'&times='+times;
+  let url = 'https://www.winfirm.com.cn/serv/index_json?symbol='+symbol+'&times='+times;
   console.log(url)
   $.ajax({
       type:'get',
       url:url,
       data:'',
+      traditional: true,
       success: function(result ) {
           let obj = JSON.parse(result);
           show_charts(obj);
