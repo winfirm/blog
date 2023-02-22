@@ -1,0 +1,49 @@
+---
+layout: default
+title: Trade Board
+---
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="/">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/about.html">About</a>
+  </li>
+</ul>
+
+<br/>
+<div class="card">
+  <div class="card-header">
+    Archives <div style="float:right"><a href="/archives.html"><u>More..</u></a></div>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      {% for post in site.posts limit:15 %}
+      <li class="list-group-item"><a href="{{ post.url }}">{{ post.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">
+    Links
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <a href="https://www.xm.com/cn/" target="_blank">xm</a>
+        |<a href="https://www.forexfactory.com/market/eurusd" target="_blank">eurusd</a>
+        |<a href="https://www.forexfactory.com/market/gbpusd" target="_blank">gbpusd</a>
+        |<a href="https://www.forexfactory.com/market/usdjpy" target="_blank">usdjpy</a>
+        |<a href="https://www.forexfactory.com/market/usdchf" target="_blank">usdchf</a>
+        |<a href="https://www.forexfactory.com/market/usdcad" target="_blank">usdcad</a>
+        |<a href="https://www.forexfactory.com/market/audusd" target="_blank">audusd</a>
+        |<a href="https://www.forexfactory.com/market/nzdusd" target="_blank">nzdusd</a>
+        |<a href="https://www.forexfactory.com/market/gbpjpy" target="_blank">gbpjpy</a>
+      </li>
+    </ul>
+  </div>
+</div>
+

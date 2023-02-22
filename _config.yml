@@ -1,0 +1,17 @@
+name: Winfirm Trade Club
+url: http://trade.youth168.com
+description: None
+
+permalink: /:title.html
+
+#gems: [jekyll-paginate]
+highlighter: pygments
+paginate: 20
+
+highlighter: rouge
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+plugins: ['jekyll-paginate']

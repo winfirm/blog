@@ -1,0 +1,9 @@
+---
+layout: page
+title: Archives
+---
+<ul class="list-group list-group-flush">
+  {% for post in site.posts %}
+  <li class="list-group-item"><a href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+</ul>
