@@ -180,7 +180,26 @@ function getconfig(barSpacing,width,height,position,rightOffset,fixLeftEdge,marg
     };    
 }
 
+
 function calculateSMA(data, count){
+	var avg = function(data, period) {
+	  const k = 2 / (period + 1);
+	  let ema = data[0].close;
+	  for (let i = 1; i < data.length; i++) {
+		ema = (data[i].close * k) + (ema * (1 - k));
+	  }
+	  return ema;
+	}
+
+	var result = [];
+	for (var i=count - 1, len=data.length; i < len; i++){
+		var val = avg(data.slice(i - count + 1, i), count);
+		result.push({ time: data[i].time, value: val});
+	}
+	return result;
+}
+
+function calculateSMA2(data, count){
   var avg = function(data) {
     var sum = 0;
     for (var i = 0; i < data.length; i++) {
