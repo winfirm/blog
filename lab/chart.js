@@ -182,19 +182,26 @@ function getconfig(barSpacing,width,height,position,rightOffset,fixLeftEdge,marg
 }
 
 
-function calculateSMA(data, count){
-	var avg = function(data, period) {
-	  const k = 2 / (period + 1);
+function calculateEMA(data, count){
+	const k = 2 / (count + 1);
+	var avg = function(data, pema) {
 	  let ema = data[0].close;
 	  for (let i = 1; i < data.length; i++) {
-		ema = (data[i].close * k) + (ema * (1 - k));
+		ema = (data[i].close * k) + (pema * (1 - k));
 	  }
 	  return ema;
 	}
 
 	var result = [];
+	var items = [];
+	var pema=0.0;
 	for (var i=count - 1, len=data.length; i < len; i++){
-		var val = avg(data.slice(i - count + 1, i), count);
+		items = data.slice(i - count + 1, i);
+		if(pema==0.0){
+			pema = items[0].close;
+		}
+		var val = avg(items, pema);
+		pema = val;
 		result.push({ time: data[i].time, value: val});
 	}
 	return result;
