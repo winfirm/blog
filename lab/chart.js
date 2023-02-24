@@ -1,5 +1,6 @@
 //color http://www.360doc.com/content/14/0329/09/4286573_364621220.shtml
 //chart https://github.com/tradingview/lightweight-charts/blob/master/docs/candlestick-series.md
+//https://dev.to/onurcelik/calculate-the-exponential-moving-average-ema-with-javascript-29kp
 var chart1;
 
 var chart_w1 = parseInt(1280*0.95);
