@@ -182,7 +182,7 @@ function getconfig(barSpacing,width,height,position,rightOffset,fixLeftEdge,marg
 }
 
 
-function calculateEMA(data, count){
+function calculateSMA(data, count){
 	const k = 2 / (count + 1);
 	var avg = function(data, pema) {
 	  let ema = data[0].close;
