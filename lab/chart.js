@@ -105,7 +105,7 @@ function show_chart_item(chart,digits,point,datas){
         },
     });
     candleSeries.setData(datas);
-	setMaLine(datas5,chart,'rgba(65, 105, 225, 1)');
+	setMaLine(datas,5,chart,'rgba(65, 105, 225, 1)');
 	setMaLine(datas,8,chart,'rgba(65, 105, 225, 1)');
 	setMaLine(datas,12,chart,'rgba(255, 69, 0, 1)');
 	setMaLine(datas,15,chart,'rgba(255, 69, 0, 1)');
