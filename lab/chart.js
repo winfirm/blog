@@ -105,16 +105,15 @@ function show_chart_item(chart,digits,point,datas){
         },
     });
     candleSeries.setData(datas);
-	
-	setMaLine(datas,3,chart,'rgba(65, 105, 225, 1)');
-	setMaLine(datas,6,chart,'rgba(65, 105, 225, 1)');
-	setMaLine(datas,10,chart,'rgba(255, 69, 0, 1)');
+	setMaLine(datas5,chart,'rgba(65, 105, 225, 1)');
+	setMaLine(datas,8,chart,'rgba(65, 105, 225, 1)');
+	setMaLine(datas,12,chart,'rgba(255, 69, 0, 1)');
 	setMaLine(datas,15,chart,'rgba(255, 69, 0, 1)');
 	
 	setMaLine(datas,30,chart,'rgba(250, 105, 225, 1)');
-	setMaLine(datas,40,chart,'rgba(250, 105, 225, 1)');
-	setMaLine(datas,50,chart,'rgba(250, 250, 250, 1)');
-	setMaLine(datas,40,chart,'rgba(250, 250, 250, 1)');
+	setMaLine(datas,37,chart,'rgba(250, 105, 225, 1)');
+	setMaLine(datas,45,chart,'rgba(250, 250, 250, 1)');
+	setMaLine(datas,55,chart,'rgba(250, 250, 250, 1)');
 	let volumeSeries = chart.addHistogramSeries({
 		priceFormat: {
 			type: 'volume',
