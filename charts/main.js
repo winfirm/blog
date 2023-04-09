@@ -40,10 +40,11 @@ symbols.push("CHFJPY");
 
 var length = symbols.length;
 var crossEnable = false;
-
+var chartWidth = 1920;
 
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
+    chartWidth = screen.width-70;
     init_charts();
     reload_symbols();
 
@@ -203,6 +204,7 @@ function show_chart_item(chart, digits, point, datas,fitContent) {
 
 function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
     return {
+        width:chartWidth,
         localization: {
             locale: 'en-US',
             dateFormat: 'yyyy/MM/dd',
@@ -237,7 +239,6 @@ function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
             },
         },
         layout: {
-            backgroundColor: '#000000',
             textColor: 'rgba(220 , 220 , 255, 0.5)',
             background: { type: 'solid', color: 'black' }
         },
