@@ -39,13 +39,29 @@ symbols.push("NZDCAD");
 symbols.push("CHFJPY");
 
 var length = symbols.length;
+var crossEnable = false;
+
 
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
     init_charts();
     reload_symbols();
+
+    $("#setcross").click(e=>{
+        console.log("click");
+        crossEnable = !crossEnable;
+        updateCross();
+    });
+    updateCross();
 });
 
+function updateCross(){
+    if(crossEnable){
+        $("#setcross").text('on');
+    }else{
+        $("#setcross").text('off');
+    }
+}
 
 function init_charts() {
     console.log('show_charts');
@@ -53,22 +69,24 @@ function init_charts() {
     let rightspace = 4;
     
     let chart;
-    let  ele;
-    let labelText;
-
+    let chartItem;
+    let chartView;
     let rootEle = document.getElementById("rootEle");
     for (let index = 0; index < length; index++) {
-        ele = document.createElement('div');
-        ele.setAttribute("class", "chart-item");
-        rootEle.appendChild(ele);
+        chartItem = document.createElement('div');
+        chartItem.setAttribute("class", "chart-item");
+        rootEle.appendChild(chartItem);
 
-        labelText= "Symbol:"+symbols[index];
         labelEle = document.createElement('label');
         labelEle.setAttribute("class", "label-item");
-        labelEle.innerHTML = labelText;
-        ele.appendChild(labelEle);
+        labelEle.innerHTML = symbols[index];
+        chartItem.appendChild(labelEle);
 
-        chart = LightweightCharts.createChart(ele, getconfig(barsize, 'left', rightspace, false));
+        chartView = document.createElement('div');
+        chartView.setAttribute("class", "chart-view");
+        chartItem.appendChild(chartView);
+
+        chart = LightweightCharts.createChart(chartView, getconfig(barsize, 'left', rightspace, false));
         charts.push(chart);
     }
 }
@@ -159,16 +177,18 @@ function show_chart_item(chart, digits, point, datas,fitContent) {
     });
 
     chart.subscribeClick(param => {
-        if (param.time === undefined) {
-            return;
-        }
         console.log(param)
-        if (LightweightCharts.isUTCTimestamp(param.time)) {
-            // param.time is UTCTimestamp
-        } else if (LightweightCharts.isBusinessDay(param.time)) {
-            // param.time is a BusinessDay object
-        } else {
-            // param.time is a business day string in ISO format, e.g. `'2010-01-01'`
+
+        if(param.point){
+            const x = param.point.x;
+            const y = param.point.y;
+            console.log(`The data point x: ${x}, y: {y}`);
+
+            const data = param.seriesData.get(candleSeries);
+            if(data){
+                let price = candleSeries.coordinateToPrice(y);
+                console.log(`The price is click: ${price}` )
+            }
         }
     });
 
