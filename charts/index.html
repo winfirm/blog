@@ -12,7 +12,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js" crossorigin="anonymous"></script>
 
   <link rel="stylesheet" href="./main.css" crossorigin="anonymous">
-  <script src="./jquery.touch.js" crossorigin="anonymous"></script>
   <script src="./main.js" crossorigin="anonymous"></script>
 </head>
 
@@ -20,7 +19,10 @@
   οnselect="document.selection.empty()" οncοpy="document.selection.empty()" onbeforecopy="return false"
   οnmοuseup="document.selection.empty()">
   <div class="chart-container">
-    <div class="chart-header">Charts</div>
+    <div class="chart-header">
+      <label>Charts</label>
+      <button id="setcross">cross</button>
+    </div>
     <div class="chart-body" id="rootEle">
     </div>
     <div class="chart-footer">copyright 2023</div>
