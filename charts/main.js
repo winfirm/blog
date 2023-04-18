@@ -13,26 +13,22 @@ var symbolsType = 0;
 var crossEnable = false;
 var chartWidth = 1920;
 
+var curSymbol = '';
+var curPrice = 0.0;
+
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
-    chartWidth = screen.width-70;
-    reload_symbols();
 
-    $("#setcross").click(e=>{
-        console.log("click");
-        crossEnable = !crossEnable;
-        updateCross();
+    $("#crossover").click(e=>{
+        console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
-    updateCross();
-});
+    $("#crossdown").click(e=>{
+        console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
+    });
 
-function updateCross(){
-    if(crossEnable){
-        $("#setcross").text('on');
-    }else{
-        $("#setcross").text('off');
-    }
-}
+    chartWidth = screen.width;
+    reload_symbols();
+});
 
 function reload_symbols() {
     let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
@@ -98,12 +94,12 @@ function load_chart_item(chart,  symbol, times,fitContent) {
         traditional: true,
         success: function (result) {
             let obj = JSON.parse(result);
-            show_chart_item(chart,obj.digits, obj.point, obj.datas1,fitContent);
+            show_chart_item(chart,symbol,obj.digits, obj.point, obj.datas1,fitContent);
         }
     });
 }
 
-function show_chart_item(chart, digits, point, datas,fitContent) {
+function show_chart_item(chart, symbol, digits, point, datas,fitContent) {
     let candleSeries = chart.addCandlestickSeries({
         upColor: '#26a69a', downColor: '#ef5350',
         borderVisible: false, wickUpColor: '#26a69a',
@@ -117,20 +113,43 @@ function show_chart_item(chart, digits, point, datas,fitContent) {
 
     chart.subscribeClick(param => {
         console.log(param)
-
-        if(param.point){
-            const x = param.point.x;
-            const y = param.point.y;
-            console.log(`The data point x: ${x}, y: {y}`);
-
-            const data = param.seriesData.get(candleSeries);
-            if(data){
-                let price = candleSeries.coordinateToPrice(y);
-                console.log(`The price is click: ${price}` )
-            }
+        crossEnable = !crossEnable
+        if(crossEnable){
+            $("#status").text("on");
+        }else{
+            $("#status").text("off");
         }
+       
+        // if(param.point){
+        //     const x = param.point.x;
+        //     const y = param.point.y;
+
+        //     const data = param.seriesData.get(candleSeries);
+        //     if(data){
+        //         let price = candleSeries.coordinateToPrice(y);
+        //         updatePrice(symbol,price.toFixed(digits));
+        //     }
+        // }
     });
 
+    chart.subscribeCrosshairMove(param => {
+        if(!crossEnable){
+            console.log("crossEnable off")
+            return;
+        }
+
+        console.log(param)
+        if (!param.point) {
+            return;
+        }
+       // const data = param.seriesData.get(candleSeries);
+        // if(data){
+            const y = param.point.y;
+            let price = candleSeries.coordinateToPrice(y);
+            updatePrice(symbol,price.toFixed(digits));
+        // }
+    });
+    
     candleSeries.setData(datas);
 
     setMaLine(datas, 10, chart, '#ffffff', 0);
@@ -138,6 +157,12 @@ function show_chart_item(chart, digits, point, datas,fitContent) {
     setMaLine(datas, 55, chart, '#0000cc', 1);
 
     fitContent&&chart.timeScale().fitContent()
+}
+
+function updatePrice(symbol, price){
+    curSymbol = symbol;
+    curPrice = price;
+    $("#price").text(symbol+':'+price)
 }
 
 function setMaLine(datas, count, chart, color, type) {
