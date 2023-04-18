@@ -23,17 +23,21 @@ color:#f1f1f1;font-size:12px
 
 .chart-body{
 	clear: both;
-	margin:0px auto;
+	margin:25px auto;
 }
 
 .chart-item{
-	clear:both;
+	float:left;
 	margin-top:35px;
-	margin-bottom:25px;
+	margin-left: 6px;
+	margin-right: 6px;
+	background-color: black;
 }
 
-.chart-view{
-	height:300px;
+.label-item{
+	color:white;
+	margin-left: 5px;
+	margin-top:5px;
 }
 
 .chart-footer{

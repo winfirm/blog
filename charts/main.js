@@ -12,6 +12,7 @@ var symbolsType = 0;
 
 var crossEnable = false;
 var chartWidth = 1920;
+var chartHeight = 300;
 
 var curSymbol = '';
 var curPrice = 0.0;
@@ -25,8 +26,14 @@ $(function () {
     $("#crossdown").click(e=>{
         console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
-
-    chartWidth = screen.width;
+    if(screen.width>=1280){
+        chartWidth = (screen.width-24-20)/2.0;
+        chartHeight=300;
+    }else{
+        chartWidth = screen.width-8;
+        chartHeight=220;
+    }
+    
     reload_symbols();
 });
 
@@ -75,7 +82,6 @@ function init_charts(symbols) {
         chartItem.appendChild(labelEle);
 
         chartView = document.createElement('div');
-        chartView.setAttribute("class", "chart-view");
         chartItem.appendChild(chartView);
 
         chart = LightweightCharts.createChart(chartView, getconfig(barsize, 'left', rightspace, false));
@@ -119,17 +125,6 @@ function show_chart_item(chart, symbol, digits, point, datas,fitContent) {
         }else{
             $("#status").text("off");
         }
-       
-        // if(param.point){
-        //     const x = param.point.x;
-        //     const y = param.point.y;
-
-        //     const data = param.seriesData.get(candleSeries);
-        //     if(data){
-        //         let price = candleSeries.coordinateToPrice(y);
-        //         updatePrice(symbol,price.toFixed(digits));
-        //     }
-        // }
     });
 
     chart.subscribeCrosshairMove(param => {
@@ -142,12 +137,9 @@ function show_chart_item(chart, symbol, digits, point, datas,fitContent) {
         if (!param.point) {
             return;
         }
-       // const data = param.seriesData.get(candleSeries);
-        // if(data){
-            const y = param.point.y;
-            let price = candleSeries.coordinateToPrice(y);
-            updatePrice(symbol,price.toFixed(digits));
-        // }
+        const y = param.point.y;
+        let price = candleSeries.coordinateToPrice(y);
+        updatePrice(symbol,price.toFixed(digits));
     });
     
     candleSeries.setData(datas);
@@ -177,6 +169,7 @@ function setMaLine(datas, count, chart, color, type) {
 function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
     return {
         width:chartWidth,
+        height:chartHeight,
         localization: {
             locale: 'en-US',
             dateFormat: 'yyyy/MM/dd',
