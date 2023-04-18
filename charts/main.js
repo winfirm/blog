@@ -3,7 +3,6 @@
 //https://dev.to/onurcelik/calculate-the-exponential-moving-average-ema-with-javascript-29kp
 
 var charts = [];
-var symbols = []
 
 var pageScreenX = 0;
 var pageScreenY = 0;
@@ -11,41 +10,12 @@ var pageIndex = 0;
 var isloading = false
 var symbolsType = 0;
 
-symbols.push("EURUSD");
-symbols.push("USDJPY");
-symbols.push("USDCHF");
-symbols.push("USDCAD");
-symbols.push("AUDUSD");
-symbols.push("GBPUSD");
-symbols.push("NZDUSD");
-symbols.push("EURJPY");
-symbols.push("EURCHF");
-symbols.push("EURGBP");
-symbols.push("EURNZD");
-symbols.push("EURCAD");
-symbols.push("EURAUD");
-symbols.push("GBPJPY");
-symbols.push("GBPCHF");
-symbols.push("GBPNZD");
-symbols.push("GBPCAD");
-symbols.push("GBPAUD");
-symbols.push("AUDCHF");
-symbols.push("AUDJPY");
-symbols.push("AUDCAD");
-symbols.push("AUDNZD");
-symbols.push("NZDJPY");
-symbols.push("NZDCHF");
-symbols.push("NZDCAD");
-symbols.push("CHFJPY");
-
-var length = symbols.length;
 var crossEnable = false;
 var chartWidth = 1920;
 
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
     chartWidth = screen.width-70;
-    init_charts();
     reload_symbols();
 
     $("#setcross").click(e=>{
@@ -64,7 +34,31 @@ function updateCross(){
     }
 }
 
-function init_charts() {
+function reload_symbols() {
+    let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
+    console.log(url)
+    $.ajax({
+        type: 'GET',
+        url: url,
+        data: '',
+        traditional: true,
+        success: function (result) {
+            let obj = JSON.parse(result);
+            let array = obj.forex;
+            if (symbolsType == 0) {
+                array = obj.forex;
+            } else if (symbolsType == 1) {
+                array = obj.futures;
+            } else if (symbolsType == 2) {
+                array = obj.stocks;
+            }
+            symbols = array;
+            init_charts(symbols);
+        }
+    });
+}
+
+function init_charts(symbols) {
     console.log('show_charts');
     let barsize = 6;
     let rightspace = 4;
@@ -73,6 +67,7 @@ function init_charts() {
     let chartItem;
     let chartView;
     let rootEle = document.getElementById("rootEle");
+    let length = symbols.length;
     for (let index = 0; index < length; index++) {
         chartItem = document.createElement('div');
         chartItem.setAttribute("class", "chart-item");
@@ -88,64 +83,7 @@ function init_charts() {
         chartItem.appendChild(chartView);
 
         chart = LightweightCharts.createChart(chartView, getconfig(barsize, 'left', rightspace, false));
-        charts.push(chart);
-    }
-}
-
-function setMaLine(datas, count, chart, color, type) {
-    const smaData = type == 0 ? calculateEMA(datas, count) : calculateSMA(datas, count);
-    const smaLine = chart.addLineSeries({
-        color,
-        lineWidth: 1,
-    });
-    smaLine.setData(smaData);
-}
-
-function calculateEMA(data, count) {
-    const k = 2 / (count + 1);
-    var avg = function (data, pema) {
-        let ema = data[0].close;
-        for (let i = 1; i < data.length; i++) {
-            ema = (data[i].close * k) + (pema * (1 - k));
-        }
-        return ema;
-    }
-
-    var result = [];
-    var items = [];
-    var pema = 0.0;
-    for (var i = count - 1, len = data.length; i < len; i++) {
-        items = data.slice(i - count + 1, i);
-        if (pema == 0.0) {
-            pema = items[0].close;
-        }
-        var val = avg(items, pema);
-        pema = val;
-        result.push({ time: data[i].time, value: val });
-    }
-    return result;
-}
-
-function calculateSMA(data, count) {
-    var avg = function (data) {
-        var sum = 0;
-        for (var i = 0; i < data.length; i++) {
-            sum += data[i].close;
-        }
-        return sum / data.length;
-    };
-    var result = [];
-    for (var i = count - 1, len = data.length; i < len; i++) {
-        var val = avg(data.slice(i - count + 1, i));
-        result.push({ time: data[i].time, value: val });
-    }
-    return result;
-}
-
-function show_chart_all() {
-    times = 'H1';
-    for (let i=0;i<length;i++) {
-        load_chart_item(charts[i], symbols[i], times, false);
+        load_chart_item(chart, symbols[index], 'H1', false);
     }
 }
 
@@ -200,6 +138,15 @@ function show_chart_item(chart, digits, point, datas,fitContent) {
     setMaLine(datas, 55, chart, '#0000cc', 1);
 
     fitContent&&chart.timeScale().fitContent()
+}
+
+function setMaLine(datas, count, chart, color, type) {
+    const smaData = type == 0 ? calculateEMA(datas, count) : calculateSMA(datas, count);
+    const smaLine = chart.addLineSeries({
+        color,
+        lineWidth: 1,
+    });
+    smaLine.setData(smaData);
 }
 
 function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
@@ -266,26 +213,43 @@ function timestampToString(timestamp) {
     return Y + M + D + h + m;
 }
 
-function reload_symbols() {
-    let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
-    console.log(url)
-    $.ajax({
-        type: 'GET',
-        url: url,
-        data: '',
-        traditional: true,
-        success: function (result) {
-            let obj = JSON.parse(result);
-            let array = obj.forex;
-            if (symbolsType == 0) {
-                array = obj.forex;
-            } else if (symbolsType == 1) {
-                array = obj.futures;
-            } else if (symbolsType == 2) {
-                array = obj.stocks;
-            }
-            symbols = array;
-            show_chart_all();
+function calculateEMA(data, count) {
+    const k = 2 / (count + 1);
+    var avg = function (data, pema) {
+        let ema = data[0].close;
+        for (let i = 1; i < data.length; i++) {
+            ema = (data[i].close * k) + (pema * (1 - k));
         }
-    });
+        return ema;
+    }
+
+    var result = [];
+    var items = [];
+    var pema = 0.0;
+    for (var i = count - 1, len = data.length; i < len; i++) {
+        items = data.slice(i - count + 1, i);
+        if (pema == 0.0) {
+            pema = items[0].close;
+        }
+        var val = avg(items, pema);
+        pema = val;
+        result.push({ time: data[i].time, value: val });
+    }
+    return result;
+}
+
+function calculateSMA(data, count) {
+    var avg = function (data) {
+        var sum = 0;
+        for (var i = 0; i < data.length; i++) {
+            sum += data[i].close;
+        }
+        return sum / data.length;
+    };
+    var result = [];
+    for (var i = count - 1, len = data.length; i < len; i++) {
+        var val = avg(data.slice(i - count + 1, i));
+        result.push({ time: data[i].time, value: val });
+    }
+    return result;
 }
