@@ -148,7 +148,7 @@ function show_chart_item(chart, symbol, digits, point, datas,fitContent) {
     setMaLine(datas, 22, chart, '#ff0000', 0);
     setMaLine(datas, 55, chart, '#0000cc', 1);
 
-    fitContent&&chart.timeScale().fitContent()
+    //fitContent&&chart.timeScale().fitContent()
 }
 
 function updatePrice(symbol, price){
