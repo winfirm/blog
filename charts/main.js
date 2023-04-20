@@ -276,7 +276,6 @@ function showAlert(message){
     var notification = new Notification("Hi",{
         body : message.content,
         icon : 'http://images0.cnblogs.com/news_topic/firefox.gif',
-        sound:audioNotification(),
         tag : {} // 可以加一个tag
     });
 }
