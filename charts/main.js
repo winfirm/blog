@@ -275,7 +275,7 @@ function calculateSMA(data, count) {
 function showAlert(message){
     var notification = new Notification("Hi",{
         body : message.content,
-        icon : 'https://images0.cnblogs.com/news_topic/firefox.gif',
+        icon : 'https://winfirm.net/charts/firefox.gif',
         tag : {} // 可以加一个tag
     });
 }
