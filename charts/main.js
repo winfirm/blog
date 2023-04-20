@@ -272,6 +272,15 @@ function calculateSMA(data, count) {
     return result;
 }
 
+function showAlert(message){
+    var notification = new Notification("Hi",{
+        body : message.content,
+        icon : 'http://images0.cnblogs.com/news_topic/firefox.gif',
+        sound:audioNotification(),
+        tag : {} // 可以加一个tag
+    });
+}
+
 function initGoEasy(){
          //初始化GoEasy对象
          let goEasy = GoEasy.getInstance({
@@ -293,9 +302,7 @@ function initGoEasy(){
             channel: "signal_channel",//替换为您自己的channel
             onMessage: function (message) { //收到消息
                 console.log("Channel:" + message.channel + " content:" + message.content);
-
-               new Notification("Alert", {dir:"auto", lang:"hi", tag:"testTAG", body:message.content})
-
+                showAlert(message);
             },
             onSuccess: function () {
                 console.log("Channel订阅成功。");
