@@ -19,7 +19,7 @@ var curPrice = 0.0;
 
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
-
+    initGoEasy();
     $("#crossover").click(e=>{
         console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
@@ -270,4 +270,42 @@ function calculateSMA(data, count) {
         result.push({ time: data[i].time, value: val });
     }
     return result;
+}
+
+function initGoEasy(){
+         //初始化GoEasy对象
+         let goEasy = GoEasy.getInstance({
+            host:'hangzhou.goeasy.io', //新加坡host：singapore.goeasy.io
+            appkey: "BC-7c8e3ea162d946c7b1b358c45d2ac019", //替换为您的应用appkey
+            modules: ['pubsub']
+        });
+         //建立连接
+        goEasy.connect({
+            onSuccess: function () { //连接成功
+                console.log("GoEasy connect successfully.") //连接成功
+            },
+            onFailed: function (error) { //连接失败
+                console.log("Failed to connect GoEasy, code:"+error.code+ ",error:"+error.content);
+            }
+        });
+        //订阅消息
+        goEasy.pubsub.subscribe({
+            channel: "signal_channel",//替换为您自己的channel
+            onMessage: function (message) { //收到消息
+                console.log("Channel:" + message.channel + " content:" + message.content);
+
+               new Notification("Alert", {dir:"auto", lang:"hi", tag:"testTAG", body:message.content})
+
+            },
+            onSuccess: function () {
+                console.log("Channel订阅成功。");
+            },
+            onFailed: function (error) {
+                console.log("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
+            }
+        });
+
+        Notification.requestPermission(function(){
+            console.log("requestPermission")
+        });
 }
