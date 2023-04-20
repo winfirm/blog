@@ -1,6 +1,6 @@
 body{
     margin:0px auto;
-	background-color: white;
+	background-color: black;
 }
 
 a {
@@ -15,29 +15,39 @@ color:#f1f1f1;font-size:12px
 	position: fixed;
 	top:0;
 	width: 100%;
-	text-align: center;
-	background-color:lightsteelblue;
 	z-index: 120;
-	padding: 3px 5px;
 }
 
 .chart-body{
 	clear: both;
-	margin:25px auto;
+	margin:0px auto;
 }
 
 .chart-item{
 	float:left;
-	margin-top:35px;
-	margin-left: 6px;
-	margin-right: 6px;
 	background-color: black;
 }
 
-.label-item{
+.chart-board{
+	position: fixed;
+	left:0;
+	bottom: 0;
+	height: 100px;
+	width: 100%;
+	background-color: #333333;
+	z-index: 150;
+	display: none;
+}
+
+.info-item{
 	color:white;
-	margin-left: 5px;
-	margin-top:5px;
+}
+
+.status-item{
+	color:white;
+	float: right;
+	margin-right: 80px;
+	color: greenyellow;
 }
 
 .chart-footer{
