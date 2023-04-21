@@ -130,7 +130,8 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
     let barsize = 6;
     let rightspace = 5;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
-    let candleSeries = chart.addCandlestickSeries({
+    
+    let candleSeries = (chartid=='chart1')?chart.addCandlestickSeries({
         upColor: '#26a69a', downColor: '#ef5350',
         borderVisible: false, wickUpColor: '#26a69a',
         wickDownColor: '#ef5350',
@@ -139,22 +140,23 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
             precision: digits,
             minMove: point,
         }
+    }): chart.addLineSeries({
+            lineWidth:1,
+            color:'#f1f1f1'
     });
 
-    //线型图，读取value值，而不是close
-    // candleSeries = chart.addLineSeries({
-    //     lineWidth:1,
-    //     color:'#f1f1f1'
-    // });
-    // for(i in datas){
-    //     datas[i]['value'] =  datas[i].close;
-    // }
+    if(chartid=='chart2'){
+        //线型图，读取value值，而不是close
+        for(i in datas){
+            datas[i]['value'] =  datas[i].close;
+        }
+    }
 
     chart.subscribeClick(param => {
         debug(param)
         crossEnable = !crossEnable
         if (crossEnable) {
-            $("#status").text("on");
+            //$("#status").text("on");
             //$("#board").css("display", "block");
         } else {
             $("#status").text("");
