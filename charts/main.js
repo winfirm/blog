@@ -21,14 +21,14 @@ var curPrice = 0.0;
 var goEasy = null;
 
 $(function () {
-    console.log('width' + screen.width + ',' + screen.height);
+    debug('width' + screen.width + ',' + screen.height);
     chartWidth = screen.width;
     chartHeight = screen.height / 2.0 - 80;
     $("#crossover").click(e => {
-        console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
+        debug(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
     $("#crossdown").click(e => {
-        console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
+        debug(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
 
     init_touch();
@@ -38,7 +38,7 @@ $(function () {
 
 function reload_symbols() {
     let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
-    console.log(url)
+    debug(url)
     $.ajax({
         type: 'GET',
         url: url,
@@ -61,7 +61,7 @@ function reload_symbols() {
 }
 
 function init_charts(symbols) {
-    console.log('show_charts');
+    debug('show_charts');
     pageIndex = 0;
     load_chart_item(symbols[pageIndex], 'D1');
 }
@@ -133,7 +133,7 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
     });
 
     chart.subscribeClick(param => {
-        console.log(param)
+        debug(param)
         crossEnable = !crossEnable
         if (crossEnable) {
             $("#status").text("on");
@@ -146,11 +146,11 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
 
     chart.subscribeCrosshairMove(param => {
         if (!crossEnable) {
-            console.log("crossEnable off")
+            debug("crossEnable off")
             return;
         }
 
-        console.log(param)
+        debug(param)
         if (!param.point) {
             return;
         }
@@ -286,7 +286,7 @@ function init_touch() {
 }
 
 function initGoEasy() {
-    console.log("initGoEasy");
+    debug("initGoEasy");
 
     goEasy = GoEasy.getInstance({
         host: 'hangzhou.goeasy.io', //新加坡host：singapore.goeasy.io
@@ -295,7 +295,7 @@ function initGoEasy() {
     });
 
     connectGoEasy();
-    
+
     setInterval(e=>{
         checkConnectStatus();
     }, 15000);
@@ -304,29 +304,29 @@ function initGoEasy() {
 function connectGoEasy(){
     goEasy.connect({
         onSuccess: function () { //连接成功
-            console.log("GoEasy connect successfully.") //连接成功
+            debug("GoEasy connect successfully.") //连接成功
         },
         onFailed: function (error) { //连接失败
-            console.log("Failed to connect GoEasy, code:" + error.code + ",error:" + error.content);
+            debug("Failed to connect GoEasy, code:" + error.code + ",error:" + error.content);
         }
     });
     goEasy.pubsub.subscribe({
         channel: "signal_channel",//替换为您自己的channel
         onMessage: function (message) { //收到消息
-            console.log("Channel:" + message.channel + " content:" + message.content);
+            debug("Channel:" + message.channel + " content:" + message.content);
             window.ChartObj && ChartObj.makeNotice(message.content);
         },
         onSuccess: function () {
-            console.log("Channel订阅成功。");
+            debug("Channel订阅成功。");
         },
         onFailed: function (error) {
-            console.log("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
+            debug("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
         }
     });
 }
 
 function checkConnectStatus(){
-    console.log("checkConnectStatus");
+    debug("checkConnectStatus");
     if (goEasy && goEasy.getConnectionStatus() === 'disconnected') {
         connectGoEasy();
      }
@@ -381,4 +381,12 @@ function calculateSMA(data, count) {
         result.push({ time: data[i].time, value: val });
     }
     return result;
+}
+
+function debug(logString){
+    if(window.ChartObj.printLog){
+        ChartObj.printLog(logString);
+    }else{
+        console.log(logString);
+    }
 }
