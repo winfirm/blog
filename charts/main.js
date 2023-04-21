@@ -105,8 +105,8 @@ function load_chart_item(symbol, times) {
         success: function (result) {
             isloading = false;
             let obj = JSON.parse(result);
-            show_chart_item('chart1', symbol, obj.digits, obj.point, obj.datas1, false);
-            show_chart_item('chart2', symbol, obj.digits, obj.point, getFenshiDatas(obj.datas2), true);
+            show_candle_chart('chart1', symbol, obj.digits, obj.point, obj.datas1);
+            show_candle_chart('chart2', symbol, obj.digits, obj.point, getFenshiDatas(obj.datas2));
         }
     });
 }
@@ -123,7 +123,7 @@ function getFenshiDatas(datas){
     return ret;
 }
 
-function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
+function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
     window.ChartObj && ChartObj.changeTitle(symbol);
     reset_element(chartid);
 
@@ -154,11 +154,6 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
     });
 
     chart.subscribeCrosshairMove(param => {
-        // if (!crossEnable) {
-        //     debug("crossEnable off")
-        //     return;
-        // }
-
         debug(param)
         if (!param.point) {
             return;
@@ -174,12 +169,13 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
         setMaLine(datas, 10, chart, '#ffffff', 1);
         setMaLine(datas, 22, chart, '#ff0000', 1);
         setMaLine(datas, 55, chart, '#0000cc', 1);
+        chart.timeScale().fitContent()
     }else{
-        setFenshiMaLine(datas, chart, '#0000cc');
+        setFenshiMaLine(datas, chart, '#ff0000');
+        setMaLine(datas, 22, chart, '#ff0000', 1);
+        setMaLine(datas, 55, chart, '#0000cc', 1);
     }
- 
-
-    fitContent && chart.timeScale().fitContent()
+    
 }
 
 function setMaLine(datas, count, chart, color, type) {
