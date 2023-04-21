@@ -384,7 +384,7 @@ function calculateSMA(data, count) {
 }
 
 function debug(logString){
-    if(window.ChartObj.printLog){
+    if(window.ChartObj){
         ChartObj.printLog(logString);
     }else{
         console.log(logString);
