@@ -142,7 +142,12 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
         }
     }): chart.addLineSeries({
             lineWidth:1,
-            color:'#f1f1f1'
+            color:'#f1f1f1',
+            priceFormat: {
+                type: 'price',
+                precision: digits,
+                minMove: point
+            }
     });
 
     if(chartid=='chart2'){
@@ -151,18 +156,6 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
             datas[i]['value'] =  datas[i].close;
         }
     }
-
-    chart.subscribeClick(param => {
-        debug(param)
-        crossEnable = !crossEnable
-        if (crossEnable) {
-            //$("#status").text("on");
-            //$("#board").css("display", "block");
-        } else {
-            $("#status").text("");
-            //$("#board").css("display", "none");
-        }
-    });
 
     chart.subscribeCrosshairMove(param => {
         debug(param)
@@ -183,7 +176,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
     }else{
         setFenshiMaLine(datas, chart, '#ffff99');
         setMaLine(datas, 22, chart, '#ff0000', 1);
-        chart.timeScale().fitContent()
+        chart.timeScale().fitContent();
     }
 }
 
