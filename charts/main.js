@@ -20,7 +20,7 @@ var curPrice = 0.0;
 
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
-    chartWidth = screen.width;
+    chartWidth = screen.width<450?screen.width:450;
     chartHeight = screen.height / 2.0 - 80;
     $("#crossover").click(e => {
         debug(`mark Info: ${curSymbol}, ${curPrice}.`);
@@ -123,7 +123,7 @@ function getFenshiDatas(datas){
     return ret;
 }
 
-function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
+function show_candle_chart(chartid, symbol, digits, point, datas) {
     window.ChartObj && ChartObj.changeTitle(symbol);
     reset_element(chartid);
 
@@ -140,6 +140,15 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
             minMove: point,
         }
     });
+
+    //线型图，读取value值，而不是close
+    // candleSeries = chart.addLineSeries({
+    //     lineWidth:1,
+    //     color:'#f1f1f1'
+    // });
+    // for(i in datas){
+    //     datas[i]['value'] =  datas[i].close;
+    // }
 
     chart.subscribeClick(param => {
         debug(param)
