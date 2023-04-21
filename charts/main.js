@@ -18,17 +18,19 @@ var chartHeight = 450;
 var curSymbol = '';
 var curPrice = 0.0;
 
+var goEasy = null;
+
 $(function () {
     console.log('width' + screen.width + ',' + screen.height);
     chartWidth = screen.width;
-    chartHeight = screen.height/2.0-80;
-    $("#crossover").click(e=>{
+    chartHeight = screen.height / 2.0 - 80;
+    $("#crossover").click(e => {
         console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
-    $("#crossdown").click(e=>{
+    $("#crossdown").click(e => {
         console.log(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
-    
+
     init_touch();
     reload_symbols();
     initGoEasy();
@@ -60,43 +62,43 @@ function reload_symbols() {
 
 function init_charts(symbols) {
     console.log('show_charts');
-    pageIndex=0;
+    pageIndex = 0;
     load_chart_item(symbols[pageIndex], 'D1');
 }
 
-function next_symbol(){
-    if(isloading){
+function next_symbol() {
+    if (isloading) {
         return;
     }
     let len = symbols.length
-    if(pageIndex < (len-1)){
+    if (pageIndex < (len - 1)) {
         pageIndex++;
-    }else {
-        pageIndex=0;
+    } else {
+        pageIndex = 0;
     }
     symbol = symbols[pageIndex];
     load_chart_item(symbol, 'D1');
 }
 
-function pre_symbol(){
-    if(isloading){
+function pre_symbol() {
+    if (isloading) {
         return;
     }
     let len = symbols.length
-    if(pageIndex >0){
+    if (pageIndex > 0) {
         pageIndex--;
-    }else{
-        pageIndex=len-1
+    } else {
+        pageIndex = len - 1
     }
     symbol = symbols[pageIndex];
     load_chart_item(symbol, 'D1');
 }
 
 function load_chart_item(symbol, times) {
-    if(isloading){
-		return;    
+    if (isloading) {
+        return;
     }
-    isloading=true;
+    isloading = true;
     let url = 'https://www.winfirm.com.cn/serv/index_json?symbol=' + symbol + '&times=' + times;
     $.ajax({
         type: 'get',
@@ -104,46 +106,46 @@ function load_chart_item(symbol, times) {
         data: '',
         traditional: true,
         success: function (result) {
-            isloading=false;
+            isloading = false;
             let obj = JSON.parse(result);
-            show_chart_item('chart1',symbol,obj.digits, obj.point, obj.datas1,false);
-            show_chart_item('chart2',symbol,obj.digits, obj.point, obj.datas2,true);
+            show_chart_item('chart1', symbol, obj.digits, obj.point, obj.datas1, false);
+            show_chart_item('chart2', symbol, obj.digits, obj.point, obj.datas2, true);
         }
     });
 }
 
-function show_chart_item(chartid, symbol, digits, point, datas,fitContent) {
-    window.ChartObj&&ChartObj.changeTitle(symbol);
+function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
+    window.ChartObj && ChartObj.changeTitle(symbol);
     reset_element(chartid);
 
     let barsize = 6;
     let rightspace = 5;
-    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true,0));
-    let  candleSeries = chart.addCandlestickSeries({
-            upColor: '#26a69a', downColor: '#ef5350',
-            borderVisible: false, wickUpColor: '#26a69a',
-            wickDownColor: '#ef5350',
-            priceFormat: {
-                type: 'price',
-                precision: digits,
-                minMove: point,
-            }
+    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
+    let candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a', downColor: '#ef5350',
+        borderVisible: false, wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+        priceFormat: {
+            type: 'price',
+            precision: digits,
+            minMove: point,
+        }
     });
 
     chart.subscribeClick(param => {
         console.log(param)
         crossEnable = !crossEnable
-        if(crossEnable){
+        if (crossEnable) {
             $("#status").text("on");
-            $("#board").css("display","block");
-        }else{
+            $("#board").css("display", "block");
+        } else {
             $("#status").text("");
-            $("#board").css("display","none");
+            $("#board").css("display", "none");
         }
     });
 
     chart.subscribeCrosshairMove(param => {
-        if(!crossEnable){
+        if (!crossEnable) {
             console.log("crossEnable off")
             return;
         }
@@ -154,16 +156,16 @@ function show_chart_item(chartid, symbol, digits, point, datas,fitContent) {
         }
         const y = param.point.y;
         let price = candleSeries.coordinateToPrice(y);
-        updatePrice(symbol,price.toFixed(digits));
+        updatePrice(symbol, price.toFixed(digits));
     });
-    
+
     candleSeries.setData(datas);
 
     setMaLine(datas, 10, chart, '#ffffff', 1);
     setMaLine(datas, 22, chart, '#ff0000', 1);
     setMaLine(datas, 55, chart, '#0000cc', 1);
 
-    fitContent&&chart.timeScale().fitContent()
+    fitContent && chart.timeScale().fitContent()
 }
 
 function setMaLine(datas, count, chart, color, type) {
@@ -177,8 +179,8 @@ function setMaLine(datas, count, chart, color, type) {
 
 function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
     return {
-        width:chartWidth,
-        height:chartHeight,
+        width: chartWidth,
+        height: chartHeight,
         localization: {
             locale: 'en-US',
             dateFormat: 'yyyy/MM/dd',
@@ -208,7 +210,7 @@ function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
                 if (LightweightCharts.isUTCTimestamp(time)) {
                     return timestampToString(time);
                 } else {
-                    return time; 
+                    return time;
                 }
             },
         },
@@ -230,88 +232,104 @@ function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
     };
 }
 
-function reset_element(id){
+function reset_element(id) {
     let doc = document.getElementById(id)
-    let child=doc.childNodes[0];
-    if(child){
+    let child = doc.childNodes[0];
+    if (child) {
         doc.removeChild(child)
-    }  
+    }
 }
 
-function updatePrice(symbol, price){
+function updatePrice(symbol, price) {
     curSymbol = symbol;
     curPrice = price;
-    if(curPrice){
-        $("#info").text('price:'+price)
+    if (curPrice) {
+        $("#info").text('price:' + price)
     }
 }
 
 const handler = function (e) {
-    if(e.originalType=='touchstart'){
-        pageScreenX=e.pageX;
-        pageScreenY=e.pageY;
-    }else if(e.originalType=='touchend'){
-        if(e.pageY-pageScreenY>100  && (pageScreenX-e.pageX)<50){
+    if (e.originalType == 'touchstart') {
+        pageScreenX = e.pageX;
+        pageScreenY = e.pageY;
+    } else if (e.originalType == 'touchend') {
+        if (e.pageY - pageScreenY > 100 && (pageScreenX - e.pageX) < 50) {
             pre_symbol();
-        }else if(pageScreenY-e.pageY>100 && (pageScreenX-e.pageX)<50){
+        } else if (pageScreenY - e.pageY > 100 && (pageScreenX - e.pageX) < 50) {
             next_symbol();
         }
     }
 };
 
-function init_touch(){
-    $(document).keydown(function(e){
-        var code=e.which;
-         switch (code) {  
-              case 38:
-                  break;  
-              case 40:
-                  break;  
-              case 37: 
-                  pre_symbol();  
-                  break;  
-              case 39:
-                  next_symbol();  
-                  break;  
-              default:  
-                  return;  
+function init_touch() {
+    $(document).keydown(function (e) {
+        var code = e.which;
+        switch (code) {
+            case 38:
+                break;
+            case 40:
+                break;
+            case 37:
+                pre_symbol();
+                break;
+            case 39:
+                next_symbol();
+                break;
+            default:
+                return;
         }
     });
-    $(".chart-container").touchInit({preventDefault: false});
+    $(".chart-container").touchInit({ preventDefault: false });
     $(".chart-container").on("touch_start", handler);
     $(".chart-container").on("touch_move", handler);
     $(".chart-container").on("touch_end", handler);
 }
 
-function initGoEasy(){
-    console.log("start goeasy");
-        
-    let goEasy = GoEasy.getInstance({
-      host:'hangzhou.goeasy.io', //新加坡host：singapore.goeasy.io
-      appkey: "BC-7c8e3ea162d946c7b1b358c45d2ac019", //替换为您的应用appkey
-      modules: ['pubsub']
-  });
-  goEasy.connect({
-      onSuccess: function () { //连接成功
-          console.log("GoEasy connect successfully.") //连接成功
-      },
-      onFailed: function (error) { //连接失败
-          console.log("Failed to connect GoEasy, code:"+error.code+ ",error:"+error.content);
-      }
-  });
-  goEasy.pubsub.subscribe({
-      channel: "signal_channel",//替换为您自己的channel
-      onMessage: function (message) { //收到消息
-          console.log("Channel:" + message.channel + " content:" + message.content);
-          window.ChartObj && ChartObj.makeNotice(message.content);
-      },
-      onSuccess: function () {
-          console.log("Channel订阅成功。");
-      },
-      onFailed: function (error) {
-          console.log("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
-      }
-  });
+function initGoEasy() {
+    console.log("initGoEasy");
+
+    goEasy = GoEasy.getInstance({
+        host: 'hangzhou.goeasy.io', //新加坡host：singapore.goeasy.io
+        appkey: "BC-7c8e3ea162d946c7b1b358c45d2ac019", //替换为您的应用appkey
+        modules: ['pubsub']
+    });
+
+    connectGoEasy();
+    
+    setInterval(e=>{
+        checkConnectStatus();
+    }, 15000);
+}
+
+function connectGoEasy(){
+    goEasy.connect({
+        onSuccess: function () { //连接成功
+            console.log("GoEasy connect successfully.") //连接成功
+        },
+        onFailed: function (error) { //连接失败
+            console.log("Failed to connect GoEasy, code:" + error.code + ",error:" + error.content);
+        }
+    });
+    goEasy.pubsub.subscribe({
+        channel: "signal_channel",//替换为您自己的channel
+        onMessage: function (message) { //收到消息
+            console.log("Channel:" + message.channel + " content:" + message.content);
+            window.ChartObj && ChartObj.makeNotice(message.content);
+        },
+        onSuccess: function () {
+            console.log("Channel订阅成功。");
+        },
+        onFailed: function (error) {
+            console.log("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
+        }
+    });
+}
+
+function checkConnectStatus(){
+    console.log("checkConnectStatus");
+    if (goEasy && goEasy.getConnectionStatus() === 'disconnected') {
+        connectGoEasy();
+     }
 }
 
 function timestampToString(timestamp) {
