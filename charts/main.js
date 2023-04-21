@@ -106,9 +106,21 @@ function load_chart_item(symbol, times) {
             isloading = false;
             let obj = JSON.parse(result);
             show_chart_item('chart1', symbol, obj.digits, obj.point, obj.datas1, false);
-            show_chart_item('chart2', symbol, obj.digits, obj.point, obj.datas2, true);
+            show_chart_item('chart2', symbol, obj.digits, obj.point, getFenshiDatas(obj.datas2), true);
         }
     });
+}
+
+function getFenshiDatas(datas){
+    let ret = [];
+    let item;
+    for(i in datas){
+        item = datas[i];
+        if(isToday(item.time)){
+            ret.push(item);
+        }        
+    }
+    return ret;
 }
 
 function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
@@ -134,18 +146,18 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
         crossEnable = !crossEnable
         if (crossEnable) {
             $("#status").text("on");
-            $("#board").css("display", "block");
+            //$("#board").css("display", "block");
         } else {
             $("#status").text("");
-            $("#board").css("display", "none");
+            //$("#board").css("display", "none");
         }
     });
 
     chart.subscribeCrosshairMove(param => {
-        if (!crossEnable) {
-            debug("crossEnable off")
-            return;
-        }
+        // if (!crossEnable) {
+        //     debug("crossEnable off")
+        //     return;
+        // }
 
         debug(param)
         if (!param.point) {
@@ -158,15 +170,29 @@ function show_chart_item(chartid, symbol, digits, point, datas, fitContent) {
 
     candleSeries.setData(datas);
 
-    setMaLine(datas, 10, chart, '#ffffff', 1);
-    setMaLine(datas, 22, chart, '#ff0000', 1);
-    setMaLine(datas, 55, chart, '#0000cc', 1);
+    if(chartid=='chart1'){
+        setMaLine(datas, 10, chart, '#ffffff', 1);
+        setMaLine(datas, 22, chart, '#ff0000', 1);
+        setMaLine(datas, 55, chart, '#0000cc', 1);
+    }else{
+        setFenshiMaLine(datas, chart, '#0000cc');
+    }
+ 
 
     fitContent && chart.timeScale().fitContent()
 }
 
 function setMaLine(datas, count, chart, color, type) {
     const smaData = type == 0 ? calculateEMA(datas, count) : calculateSMA(datas, count);
+    const smaLine = chart.addLineSeries({
+        color,
+        lineWidth: 1,
+    });
+    smaLine.setData(smaData);
+}
+
+function setFenshiMaLine(datas, chart, color){
+    const smaData = calculateFenshiMA(datas);
     const smaLine = chart.addLineSeries({
         color,
         lineWidth: 1,
@@ -292,6 +318,17 @@ function timestampToString(timestamp) {
     return Y + M + D + h + m;
 }
 
+function isToday(timestamp){
+    const date = new Date(timestamp * 1000);
+    const today = new Date();
+    if(date.getFullYear()==today.getFullYear()
+        && date.getMonth()== today.getMonth()
+        && date.getDate()==today.getDate()){
+            return true;
+    }
+    return false;
+}
+
 function calculateEMA(data, count) {
     const k = 2 / (count + 1);
     var avg = function (data, pema) {
@@ -317,17 +354,27 @@ function calculateEMA(data, count) {
     return result;
 }
 
+function calculateAvg(data){
+    var sum = 0;
+    for (var i = 0; i < data.length; i++) {
+        sum += data[i].close;
+    }
+    return sum / data.length;
+}
+
 function calculateSMA(data, count) {
-    var avg = function (data) {
-        var sum = 0;
-        for (var i = 0; i < data.length; i++) {
-            sum += data[i].close;
-        }
-        return sum / data.length;
-    };
     var result = [];
     for (var i = count - 1, len = data.length; i < len; i++) {
-        var val = avg(data.slice(i - count + 1, i));
+        var val = calculateAvg(data.slice(i - count + 1, i));
+        result.push({ time: data[i].time, value: val });
+    }
+    return result;
+}
+
+function calculateFenshiMA(data){
+    var result = [];
+    for (var i = 0, len = data.length; i < len; i++) {
+        var val = calculateAvg(data.slice(0, i));
         result.push({ time: data[i].time, value: val });
     }
     return result;
