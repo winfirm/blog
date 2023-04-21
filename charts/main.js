@@ -180,8 +180,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
         setMaLine(datas, 55, chart, '#0000cc', 1);
     }else{
         setFenshiMaLine(datas, chart, '#ffff99');
-        setMaLine(datas, 10, chart, '#ffffff', 1);
-        setMaLine(datas, 20, chart, '#ff0000', 1);
+        setMaLine(datas, 22, chart, '#ff0000', 1);
         chart.timeScale().fitContent()
     }
 }
