@@ -170,12 +170,11 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
         setMaLine(datas, 22, chart, '#ff0000', 1);
         setMaLine(datas, 55, chart, '#0000cc', 1);
     }else{
-        setFenshiMaLine(datas, chart, '#ffffff');
-        setMaLine(datas, 22, chart, '#ff0000', 1);
-        setMaLine(datas, 55, chart, '#0000cc', 1);
+        setFenshiMaLine(datas, chart, '#ffff99');
+        setMaLine(datas, 10, chart, '#ffffff', 1);
+        setMaLine(datas, 20, chart, '#ff0000', 1);
         chart.timeScale().fitContent()
     }
-    
 }
 
 function setMaLine(datas, count, chart, color, type) {
