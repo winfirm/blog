@@ -18,8 +18,6 @@ var chartHeight = 450;
 var curSymbol = '';
 var curPrice = 0.0;
 
-var goEasy = null;
-
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
     chartWidth = screen.width;
@@ -33,7 +31,6 @@ $(function () {
 
     init_touch();
     reload_symbols();
-    initGoEasy();
 });
 
 function reload_symbols() {
@@ -283,53 +280,6 @@ function init_touch() {
     $(".chart-container").on("touch_start", handler);
     $(".chart-container").on("touch_move", handler);
     $(".chart-container").on("touch_end", handler);
-}
-
-function initGoEasy() {
-    debug("initGoEasy");
-
-    goEasy = GoEasy.getInstance({
-        host: 'hangzhou.goeasy.io', //新加坡host：singapore.goeasy.io
-        appkey: "BC-7c8e3ea162d946c7b1b358c45d2ac019", //替换为您的应用appkey
-        modules: ['pubsub']
-    });
-
-    connectGoEasy();
-
-    setInterval(e=>{
-        checkConnectStatus();
-    }, 15000);
-}
-
-function connectGoEasy(){
-    goEasy.connect({
-        onSuccess: function () { //连接成功
-            debug("GoEasy connect successfully.") //连接成功
-        },
-        onFailed: function (error) { //连接失败
-            debug("Failed to connect GoEasy, code:" + error.code + ",error:" + error.content);
-        }
-    });
-    goEasy.pubsub.subscribe({
-        channel: "signal_channel",//替换为您自己的channel
-        onMessage: function (message) { //收到消息
-            debug("Channel:" + message.channel + " content:" + message.content);
-            window.ChartObj && ChartObj.makeNotice(message.content);
-        },
-        onSuccess: function () {
-            debug("Channel订阅成功。");
-        },
-        onFailed: function (error) {
-            debug("Channel订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
-        }
-    });
-}
-
-function checkConnectStatus(){
-    debug("checkConnectStatus");
-    if (goEasy && goEasy.getConnectionStatus() === 'disconnected') {
-        connectGoEasy();
-     }
 }
 
 function timestampToString(timestamp) {
