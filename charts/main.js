@@ -22,8 +22,8 @@ var clickCount=0;
 
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
-    chartWidth = screen.width<450?screen.width:450;
-    chartHeight = screen.height / 2.0 - 80;
+    chartWidth = screen.width<450?screen.width:screen.width;
+    chartHeight = screen.height / 3.0 - 50;
     $("#crossover").click(e => {
         debug(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
@@ -107,42 +107,23 @@ function load_chart_item(symbol, times) {
         success: function (result) {
             isloading = false;
             let obj = JSON.parse(result);
+
+            window.ChartObj && ChartObj.changeTitle(symbol);
             show_candle_chart('chart1', symbol, obj.digits, obj.point, obj.datas1);
+            show_candle_chart('chart2', symbol, obj.digits, obj.point, obj.datas2);
+
             let dlen = obj.datas1.length;
             let dkdata = obj.datas1[dlen-1];
-            show_candle_chart('chart2', symbol, obj.digits, obj.point, getFenshiDatas(dkdata.time, obj.datas2));
+            show_fenshi_chart('chart3', symbol, obj.digits, obj.point, dkdata.time, obj.datas3);
         }
     });
 }
 
-function getFenshiDatas(dtime, datas){
-    let ret = [];
-    let item;
-    for(i in datas){
-        item = datas[i];
-        if(isToday(dtime, item.time)){
-            ret.push(item);
-        }
-    }
-    return ret;
-}
-
-function isToday(dtime,  timestamp){
-    let date = new Date(timestamp*1000);
-    if(date.getFullYear()>=dtime.year 
-    && (date.getMonth()+1)>=dtime.month
-    && date.getDate()>=dtime.day){
-        return true;
-    }
-    return false;
-}
-
 function show_candle_chart(chartid, symbol, digits, point, datas) {
-    window.ChartObj && ChartObj.changeTitle(symbol);
     reset_element(chartid);
 
-    let barsize = (chartid=='chart1'?10:1.5);
-    let rightspace = 3;
+    let barsize = (chartid=='chart1'?7.5:4.5);
+    let rightspace =  (chartid=='chart1'?6:15);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
     
     let candleSeries = chart.addCandlestickSeries({
@@ -156,24 +137,61 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
         }
     })
 
-    if(chartid=='chart2'){
-        //线型图，读取value值，而不是close
-        for(i in datas){
-            datas[i]['value'] =  datas[i].close;
-        }
-    }
+    candleSeries.setData(datas);
+    chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, candleSeries));
+    chart.subscribeClick(clickEvent(symbol,candleSeries));
 
-    chart.subscribeCrosshairMove(param => {
+    setMaLine(datas, 10, chart, '#ffffff', 1);
+    setMaLine(datas, 22, chart, '#ff0000', 1);
+   
+    if(chartid=='chart2'){
+        setMaLine(datas, 55, chart, '#0099cc', 1);
+    }
+}
+
+function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
+    reset_element(chartid);
+
+    let barsize = 1.5;
+    let rightspace = 3;
+    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
+
+    let datas = getFenshiDatas(dtime, datas3);
+    let lineSeries = chart.addLineSeries({
+        lineWidth:1,
+        color:'#ffffff',
+        priceFormat: {
+            type: 'price',
+            precision: digits,
+            minMove: point
+        }
+    });
+
+    lineSeries.setData(datas);
+    chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, lineSeries));
+    chart.subscribeClick(clickEvent(symbol,lineSeries));
+
+    setFenshiMaLine(datas, chart, '#ffff99');
+    setMaLine(datas, 55, chart, '#0099cc', 0);
+    setMaLine(datas, 21, chart, '#ff0000', 0);
+    //chart.timeScale().fitContent();
+}
+
+function crossMoveEvent(symbol,digits, series){
+    let fun = param=>{
         debug(param)
         if (!param.point) {
             return;
         }
         const y = param.point.y;
-        let price = candleSeries.coordinateToPrice(y);
+        let price = series.coordinateToPrice(y);
         updatePrice(symbol, price.toFixed(digits));
-    });
+    }
+    return fun;
+}
 
-    chart.subscribeClick(param=>{
+function clickEvent(symbol, series){
+    let fun = param=>{
         if(clickCount==0){
             clickCount=1;
             setTimeout(clickDrop,1500);
@@ -188,21 +206,34 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
                 axisLabelVisible: true,
                 title: 'up',
             };
-            candleSeries.createPriceLine(myPriceLine);
+            series.createPriceLine(myPriceLine);
         }
-    });
-
-    candleSeries.setData(datas);
-
-    if(chartid=='chart1'){
-        setMaLine(datas, 10, chart, '#ffffff', 1);
-        setMaLine(datas, 22, chart, '#ff0000', 1);
-        setMaLine(datas, 55, chart, '#0000cc', 1);
-    }else{
-        setFenshiMaLine(datas, chart, '#ffff99');
-        setMaLine(datas, 22, chart, '#ff0000', 1);
-        //chart.timeScale().fitContent();
     }
+    return fun;
+}
+
+
+function getFenshiDatas(dtime, datas){
+    let ret = [];
+    let item;
+    for(i in datas){
+        item = datas[i];
+        if(isToday(dtime, item.time)){
+            item['value'] =  item.close;//线型图，读取value值，而不是close
+            ret.push(item);
+        }
+    }
+    return ret;
+}
+
+function isToday(dtime,  timestamp){
+    let date = new Date(timestamp*1000);
+    if(date.getFullYear()>=dtime.year 
+    && (date.getMonth()+1)>=dtime.month
+    && date.getDate()>=dtime.day){
+        return true;
+    }
+    return false;
 }
 
 function clickDrop(){
