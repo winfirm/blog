@@ -22,8 +22,8 @@ var clickCount=0;
 
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
-    chartWidth = screen.width<450?screen.width:screen.width;
-    chartHeight = screen.height / 3.0 - 50;
+    chartWidth = screen.width<393?screen.width:393;
+    chartHeight = screen.height / 3.0;
     $("#crossover").click(e => {
         debug(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
@@ -109,8 +109,10 @@ function load_chart_item(symbol, times) {
             let obj = JSON.parse(result);
 
             window.ChartObj && ChartObj.changeTitle(symbol);
-            show_candle_chart('chart1', symbol, obj.digits, obj.point, obj.datas1);
-            show_candle_chart('chart2', symbol, obj.digits, obj.point, obj.datas2);
+            let datas1 = obj.datas1;
+            show_candle_chart('chart1', symbol, obj.digits, obj.point, datas1.slice(datas1.length-45),false);
+            let datas2 = obj.datas2;
+            show_candle_chart('chart2', symbol, obj.digits, obj.point, datas2.slice(0),true);
 
             let dlen = obj.datas1.length;
             let dkdata = obj.datas1[dlen-1];
@@ -119,12 +121,13 @@ function load_chart_item(symbol, times) {
     });
 }
 
-function show_candle_chart(chartid, symbol, digits, point, datas) {
+function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
     reset_element(chartid);
 
-    let barsize = (chartid=='chart1'?7.5:4.5);
-    let rightspace =  (chartid=='chart1'?6:15);
-    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
+    let barsize = (chartid=='chart1'?7:3.65);
+    let rightspace =  (chartid=='chart1'?5:3);
+    let cHeight = (chartid=='chart1')?(chartHeight-50):(chartHeight+20);
+    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
     
     let candleSeries = chart.addCandlestickSeries({
         upColor: '#ef5350', downColor: '#26a69a',
@@ -135,30 +138,39 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
             precision: digits,
             minMove: point,
         }
-    })
-
+    });
+    candleSeries.priceScale().applyOptions({
+        autoScale: true, 
+        scaleMargins: {
+            top: 0.1,
+            bottom: 0.1,
+        },
+    });
     candleSeries.setData(datas);
     chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, candleSeries));
     chart.subscribeClick(clickEvent(symbol,candleSeries));
-
-    setMaLine(datas, 10, chart, '#ffffff', 1);
-    setMaLine(datas, 22, chart, '#ff0000', 1);
+    setMaLine(datas, 10, chart, '#ffffff', 0);
+    setMaLine(datas, 20, chart, '#ff0000', 0);
    
     if(chartid=='chart2'){
         setMaLine(datas, 55, chart, '#0099cc', 1);
+    }
+    if(fitContent){
+        chart.timeScale().fitContent();
     }
 }
 
 function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
     reset_element(chartid);
 
-    let barsize = 1.5;
+    let barsize = 0;
     let rightspace = 3;
-    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
+    let cHeight = chartHeight-120;
+    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize,  rightspace));
 
     let datas = getFenshiDatas(dtime, datas3);
     let lineSeries = chart.addLineSeries({
-        lineWidth:1,
+        lineWidth:0.75,
         color:'#ffffff',
         priceFormat: {
             type: 'price',
@@ -166,15 +178,20 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
             minMove: point
         }
     });
-
+    lineSeries.priceScale().applyOptions({
+        autoScale: true, 
+        scaleMargins: {
+            top: 0.1,
+            bottom: 0.1,
+        },
+    });
     lineSeries.setData(datas);
     chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, lineSeries));
     chart.subscribeClick(clickEvent(symbol,lineSeries));
 
     setFenshiMaLine(datas, chart, '#ffff99');
-    setMaLine(datas, 55, chart, '#0099cc', 0);
-    setMaLine(datas, 21, chart, '#ff0000', 0);
-    //chart.timeScale().fitContent();
+    setMaLine(datas, 21, chart, '#cc0000', 0);
+    chart.timeScale().fitContent();
 }
 
 function crossMoveEvent(symbol,digits, series){
@@ -260,10 +277,10 @@ function setFenshiMaLine(datas, chart, color){
     smaLine.setData(smaData);
 }
 
-function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
+function getconfig(width,height,barSpacing, rightOffset) {
     return {
-        width: chartWidth,
-        height: chartHeight,
+        width,
+        height,
         localization: {
             locale: 'en-US',
             dateFormat: 'yyyy/MM/dd',
@@ -275,18 +292,12 @@ function getconfig(barSpacing, position, rightOffset, fixLeftEdge, margin) {
                 }
             }
         },
-        priceScale: {
-            autoScale: false,
-            position,
-            scaleMargins: margin,
-            drawTicks: false
-        },
 
         timeScale: {
             rightOffset,
             barSpacing,
             rightBarStaysOnScroll: false,
-            fixLeftEdge,
+            fixLeftEdge:false,
             alignLabels: false,
             borderVisible: false,
             tickMarkFormatter: (time, tickMarkType, locale) => {
@@ -375,7 +386,7 @@ function timestampToString(timestamp) {
     const D = date.getDate() + ' ';
     const h = date.getHours() + ':';
     const m = date.getMinutes()
-    return Y + M + D + h + m;
+    return M + D + h + m;
 }
 
 function calculateEMA(data, count) {
