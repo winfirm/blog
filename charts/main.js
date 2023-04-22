@@ -18,6 +18,8 @@ var chartHeight = 450;
 var curSymbol = '';
 var curPrice = 0.0;
 
+var clickCount=0;
+
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
     chartWidth = screen.width<450?screen.width:450;
@@ -106,49 +108,53 @@ function load_chart_item(symbol, times) {
             isloading = false;
             let obj = JSON.parse(result);
             show_candle_chart('chart1', symbol, obj.digits, obj.point, obj.datas1);
-            show_candle_chart('chart2', symbol, obj.digits, obj.point, getFenshiDatas(obj.datas2));
+            let dlen = obj.datas1.length;
+            let dkdata = obj.datas1[dlen-1];
+            show_candle_chart('chart2', symbol, obj.digits, obj.point, getFenshiDatas(dkdata.time, obj.datas2));
         }
     });
 }
 
-function getFenshiDatas(datas){
+function getFenshiDatas(dtime, datas){
     let ret = [];
     let item;
     for(i in datas){
         item = datas[i];
-        if(isToday(item.time)){
+        if(isToday(dtime, item.time)){
             ret.push(item);
-        }        
+        }
     }
     return ret;
+}
+
+function isToday(dtime,  timestamp){
+    let date = new Date(timestamp*1000);
+    if(date.getFullYear()>=dtime.year 
+    && (date.getMonth()+1)>=dtime.month
+    && date.getDate()>=dtime.day){
+        return true;
+    }
+    return false;
 }
 
 function show_candle_chart(chartid, symbol, digits, point, datas) {
     window.ChartObj && ChartObj.changeTitle(symbol);
     reset_element(chartid);
 
-    let barsize = 6;
-    let rightspace = 5;
+    let barsize = (chartid=='chart1'?10:1.5);
+    let rightspace = 3;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(barsize, 'left', rightspace, true, 0));
     
-    let candleSeries = (chartid=='chart1')?chart.addCandlestickSeries({
-        upColor: '#26a69a', downColor: '#ef5350',
-        borderVisible: false, wickUpColor: '#26a69a',
-        wickDownColor: '#ef5350',
+    let candleSeries = chart.addCandlestickSeries({
+        upColor: '#ef5350', downColor: '#26a69a',
+        borderVisible: false, wickUpColor: '#ef5350',
+        wickDownColor: '#26a69a',
         priceFormat: {
             type: 'price',
             precision: digits,
             minMove: point,
         }
-    }): chart.addLineSeries({
-            lineWidth:1,
-            color:'#f1f1f1',
-            priceFormat: {
-                type: 'price',
-                precision: digits,
-                minMove: point
-            }
-    });
+    })
 
     if(chartid=='chart2'){
         //线型图，读取value值，而不是close
@@ -167,6 +173,25 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
         updatePrice(symbol, price.toFixed(digits));
     });
 
+    chart.subscribeClick(param=>{
+        if(clickCount==0){
+            clickCount=1;
+            setTimeout(clickDrop,1500);
+        } else if(clickCount==1){
+            clickCount = 0;
+            debug("double click");
+            const myPriceLine = {
+                price: curPrice,
+                color: '#3179F5',
+                lineWidth: 1,
+                lineStyle: 2, // LineStyle.Dashed
+                axisLabelVisible: true,
+                title: 'up',
+            };
+            candleSeries.createPriceLine(myPriceLine);
+        }
+    });
+
     candleSeries.setData(datas);
 
     if(chartid=='chart1'){
@@ -176,7 +201,13 @@ function show_candle_chart(chartid, symbol, digits, point, datas) {
     }else{
         setFenshiMaLine(datas, chart, '#ffff99');
         setMaLine(datas, 22, chart, '#ff0000', 1);
-        chart.timeScale().fitContent();
+        //chart.timeScale().fitContent();
+    }
+}
+
+function clickDrop(){
+    if(clickCount>0){
+        clickCount = clickCount-1;
     }
 }
 
@@ -314,17 +345,6 @@ function timestampToString(timestamp) {
     const h = date.getHours() + ':';
     const m = date.getMinutes()
     return Y + M + D + h + m;
-}
-
-function isToday(timestamp){
-    const date = new Date(timestamp * 1000);
-    const today = new Date();
-    if(date.getFullYear()==today.getFullYear()
-        && date.getMonth()== today.getMonth()
-        && date.getDate()==today.getDate()){
-            return true;
-    }
-    return false;
 }
 
 function calculateEMA(data, count) {
