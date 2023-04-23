@@ -22,7 +22,7 @@ var clickCount=0;
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
 
-    chartWidth = screen.width<400?screen.width:screen.width/2;
+    chartWidth = screen.width<450?screen.width:screen.width/2;
     chartHeight = screen.height / 3.0;
 
     $(".chart-body").css("width", chartWidth);
@@ -93,9 +93,9 @@ function set_load_result(result,symbol){
 function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
     reset_element(chartid);
 
-    let barsize = (chartid=='chart1'?12:3.5);
-    let rightspace =  (chartid=='chart1'?5:3);
-    let cHeight = (chartid=='chart1')?(chartHeight-30):(chartHeight+20);
+    let barsize = (chartid=='chart1'?8:3.5);
+    let rightspace =  (chartid=='chart1'?5:10);
+    let cHeight = (chartid=='chart1')?(chartHeight-40):(chartHeight+40);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
     
     let candleSeries = chart.addCandlestickSeries({
@@ -111,7 +111,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
     candleSeries.priceScale().applyOptions({
         autoScale: true, 
         scaleMargins: {
-            top: 0.1,
+            top: 0.075,
             bottom: 0.1,
         },
     });
@@ -134,12 +134,12 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
 
     let barsize = 0;
     let rightspace = 3;
-    let cHeight = chartHeight-140;
+    let cHeight = chartHeight-135;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize,  rightspace));
 
     let datas = getFenshiDatas(dtime, datas3);
     let lineSeries = chart.addLineSeries({
-        lineWidth:0.75,
+        lineWidth:0.55,
         color:'#ffffff',
         priceFormat: {
             type: 'price',
@@ -305,7 +305,7 @@ function updatePrice(symbol, price) {
     curSymbol = symbol;
     curPrice = price;
     if (curPrice) {
-        $("#info").text('price:' + price)
+        $("#info").text(price);
     }
 }
 
@@ -313,6 +313,10 @@ function next_symbol() {
     if (isloading) {
         return;
     }
+    
+    curPrice=0.0;
+    $("#info").text("");
+
     let len = symbols.length
     if (pageIndex < (len - 1)) {
         pageIndex++;
@@ -327,6 +331,10 @@ function pre_symbol() {
     if (isloading) {
         return;
     }
+
+    curPrice=0.0;
+    $("#info").text("");
+
     let len = symbols.length
     if (pageIndex > 0) {
         pageIndex--;

@@ -15,8 +15,16 @@ color:#f1f1f1;font-size:12px
 .chart-header{
 	position: fixed;
 	top:0;
+	left:0;
 	width: 100%;
 	z-index: 120;
+	text-align: left;
+}
+
+.info-item{
+	color:#999999;
+	width: 80px;
+
 }
 
 .chart-body{
