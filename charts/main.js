@@ -1,6 +1,5 @@
 //color http://www.360doc.com/content/14/0329/09/4286573_364621220.shtml
 //chart https://github.com/tradingview/lightweight-charts/blob/master/docs/candlestick-series.md
-//https://dev.to/onurcelik/calculate-the-exponential-moving-average-ema-with-javascript-29kp
 
 var charts = [];
 
@@ -22,8 +21,11 @@ var clickCount=0;
 
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
-    chartWidth = screen.width<393?screen.width:393;
+
+    chartWidth = screen.width<400?screen.width:screen.width/2;
     chartHeight = screen.height / 3.0;
+
+    $(".chart-body").css("width", chartWidth);
     $("#crossover").click(e => {
         debug(`mark Info: ${curSymbol}, ${curPrice}.`);
     });
@@ -37,7 +39,6 @@ $(function () {
 
 function reload_symbols() {
     let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
-    debug(url)
     $.ajax({
         type: 'GET',
         url: url,
@@ -45,15 +46,7 @@ function reload_symbols() {
         traditional: true,
         success: function (result) {
             let obj = JSON.parse(result);
-            let array = obj.forex;
-            if (symbolsType == 0) {
-                array = obj.forex;
-            } else if (symbolsType == 1) {
-                array = obj.futures;
-            } else if (symbolsType == 2) {
-                array = obj.stocks;
-            }
-            symbols = array;
+            symbols = obj.forex;
             init_charts(symbols);
         }
     });
@@ -63,34 +56,6 @@ function init_charts(symbols) {
     debug('show_charts');
     pageIndex = 0;
     load_chart_item(symbols[pageIndex], 'D1');
-}
-
-function next_symbol() {
-    if (isloading) {
-        return;
-    }
-    let len = symbols.length
-    if (pageIndex < (len - 1)) {
-        pageIndex++;
-    } else {
-        pageIndex = 0;
-    }
-    symbol = symbols[pageIndex];
-    load_chart_item(symbol, 'D1');
-}
-
-function pre_symbol() {
-    if (isloading) {
-        return;
-    }
-    let len = symbols.length
-    if (pageIndex > 0) {
-        pageIndex--;
-    } else {
-        pageIndex = len - 1
-    }
-    symbol = symbols[pageIndex];
-    load_chart_item(symbol, 'D1');
 }
 
 function load_chart_item(symbol, times) {
@@ -106,27 +71,31 @@ function load_chart_item(symbol, times) {
         traditional: true,
         success: function (result) {
             isloading = false;
-            let obj = JSON.parse(result);
-
-            window.ChartObj && ChartObj.changeTitle(symbol);
-            let datas1 = obj.datas1;
-            show_candle_chart('chart1', symbol, obj.digits, obj.point, datas1.slice(datas1.length-45),false);
-            let datas2 = obj.datas2;
-            show_candle_chart('chart2', symbol, obj.digits, obj.point, datas2.slice(0),true);
-
-            let dlen = obj.datas1.length;
-            let dkdata = obj.datas1[dlen-1];
-            show_fenshi_chart('chart3', symbol, obj.digits, obj.point, dkdata.time, obj.datas3);
+            set_load_result(result, symbol);
         }
     });
+}
+
+function set_load_result(result,symbol){
+    let obj = JSON.parse(result);
+
+    window.ChartObj && ChartObj.changeTitle(symbol);
+    let datas1 = obj.datas1;
+    show_candle_chart('chart1', symbol, obj.digits, obj.point, datas1.slice(datas1.length-96),false);
+    let datas2 = obj.datas2;
+    show_candle_chart('chart2', symbol, obj.digits, obj.point, datas2,false);
+
+    let dlen = obj.datas1.length;
+    let dkdata = obj.datas1[dlen-1];
+    show_fenshi_chart('chart3', symbol, obj.digits, obj.point, dkdata.time, obj.datas3);
 }
 
 function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
     reset_element(chartid);
 
-    let barsize = (chartid=='chart1'?7:3.65);
+    let barsize = (chartid=='chart1'?12:3.5);
     let rightspace =  (chartid=='chart1'?5:3);
-    let cHeight = (chartid=='chart1')?(chartHeight-50):(chartHeight+20);
+    let cHeight = (chartid=='chart1')?(chartHeight-30):(chartHeight+20);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
     
     let candleSeries = chart.addCandlestickSeries({
@@ -165,7 +134,7 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
 
     let barsize = 0;
     let rightspace = 3;
-    let cHeight = chartHeight-120;
+    let cHeight = chartHeight-140;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize,  rightspace));
 
     let datas = getFenshiDatas(dtime, datas3);
@@ -196,7 +165,6 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
 
 function crossMoveEvent(symbol,digits, series){
     let fun = param=>{
-        debug(param)
         if (!param.point) {
             return;
         }
@@ -228,7 +196,6 @@ function clickEvent(symbol, series){
     }
     return fun;
 }
-
 
 function getFenshiDatas(dtime, datas){
     let ret = [];
@@ -342,7 +309,35 @@ function updatePrice(symbol, price) {
     }
 }
 
-const handler = function (e) {
+function next_symbol() {
+    if (isloading) {
+        return;
+    }
+    let len = symbols.length
+    if (pageIndex < (len - 1)) {
+        pageIndex++;
+    } else {
+        pageIndex = 0;
+    }
+    symbol = symbols[pageIndex];
+    load_chart_item(symbol, 'D1');
+}
+
+function pre_symbol() {
+    if (isloading) {
+        return;
+    }
+    let len = symbols.length
+    if (pageIndex > 0) {
+        pageIndex--;
+    } else {
+        pageIndex = len - 1
+    }
+    symbol = symbols[pageIndex];
+    load_chart_item(symbol, 'D1');
+}
+
+function handler(e) {
     if (e.originalType == 'touchstart') {
         pageScreenX = e.pageX;
         pageScreenY = e.pageY;
