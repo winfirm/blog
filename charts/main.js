@@ -19,6 +19,10 @@ var curPrice = 0.0;
 
 var clickCount=0;
 
+//forex的open时间是从早5点开始的。
+const TIME_DELTA_MS = 5*60*60*1000;
+var seriesType=0 //forex:0, futures:1, stock:2
+
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
 
@@ -47,6 +51,7 @@ function reload_symbols() {
         success: function (result) {
             let obj = JSON.parse(result);
             symbols = obj.forex;
+            seriesType = 0;
             init_charts(symbols);
         }
     });
@@ -106,7 +111,8 @@ function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
             type: 'price',
             precision: digits,
             minMove: point,
-        }
+        },
+        priceLineVisible:false
     });
     candleSeries.priceScale().applyOptions({
         autoScale: true, 
@@ -145,7 +151,8 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
             type: 'price',
             precision: digits,
             minMove: point
-        }
+        },
+        priceLineVisible:false
     });
     lineSeries.priceScale().applyOptions({
         autoScale: true, 
@@ -211,7 +218,7 @@ function getFenshiDatas(dtime, datas){
 }
 
 function isToday(dtime,  timestamp){
-    let date = new Date(timestamp*1000);
+    let date = (seriesType==0)?new Date(timestamp*1000-TIME_DELTA_MS):new Date(timestamp*1000);
     if(date.getFullYear()>=dtime.year 
     && (date.getMonth()+1)>=dtime.month
     && date.getDate()>=dtime.day){
