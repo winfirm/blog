@@ -2,7 +2,7 @@ name: Winfirm
 url: http://trade.youth168.com
 description: None
 
-permalink: /:categories/:title.html
+permalink: /:title.html
 
 highlighter: pygments
 paginate: 20
