@@ -8,6 +8,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js" crossorigin="anonymous"></script>
   <script src="./jquery.touch.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./main.css" crossorigin="anonymous">
+  <script src="./utils.js" crossorigin="anonymous"></script>
   <script src="./main.js" crossorigin="anonymous"></script>
 </head>
 
@@ -16,7 +17,8 @@
   οnmοuseup="document.selection.empty()">
   <div class="chart-container">
     <div class="chart-header">
-        <label id="info" class="info-item"></label>
+        <label id="symbol" class="symbol-item"></label>
+        <label id="price" class="price-item"></label>
     </div>
     <div class="chart-body" id="rootEle">
       <div  class = "chart-item" id="chart1"></div>

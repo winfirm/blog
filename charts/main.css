@@ -21,10 +21,15 @@ color:#f1f1f1;font-size:12px
 	text-align: left;
 }
 
-.info-item{
+.price-item{
 	color:#999999;
 	width: 80px;
 
+}
+
+.symbol-item{
+	color:#cc0000;
+	width: 80px;
 }
 
 .chart-body{

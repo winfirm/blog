@@ -17,29 +17,23 @@ var chartHeight = 450;
 var curSymbol = '';
 var curPrice = 0.0;
 
-var clickCount=0;
-
-//forex的open时间是从早5点开始的。
-const TIME_DELTA_MS = 5*60*60*1000;
-var seriesType=0 //forex:0, futures:1, stock:2
+var clickCount = 0;
+var seriesType = 0 //forex:0, futures:1, stock:2
 
 $(function () {
     debug('width' + screen.width + ',' + screen.height);
-
-    chartWidth = screen.width<450?screen.width:screen.width/2;
-    chartHeight = screen.height / 3.0;
-
+    if (isMobile()) {
+        chartWidth = screen.width;
+        chartHeight = screen.height / 3.0;
+    } else {
+        chartWidth = screen.width;
+        chartHeight = screen.height / 3.0 - 10;
+    }
     $(".chart-body").css("width", chartWidth);
-    $("#crossover").click(e => {
-        debug(`mark Info: ${curSymbol}, ${curPrice}.`);
-    });
-    $("#crossdown").click(e => {
-        debug(`mark Info: ${curSymbol}, ${curPrice}.`);
-    });
 
     init_touch();
     reload_symbols();
-});
+})
 
 function reload_symbols() {
     let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
@@ -81,28 +75,29 @@ function load_chart_item(symbol, times) {
     });
 }
 
-function set_load_result(result,symbol){
+function set_load_result(result, symbol) {
+    updateSymbol(symbol);
     let obj = JSON.parse(result);
 
     window.ChartObj && ChartObj.changeTitle(symbol);
     let datas1 = obj.datas1;
-    show_candle_chart('chart1', symbol, obj.digits, obj.point, datas1.slice(datas1.length-96),false);
+    show_candle_chart('chart1', symbol, obj.digits, obj.point, datas1.slice(datas1.length - 96), false);
     let datas2 = obj.datas2;
-    show_candle_chart('chart2', symbol, obj.digits, obj.point, datas2,false);
+    show_candle_chart('chart2', symbol, obj.digits, obj.point, datas2, false);
 
     let dlen = obj.datas1.length;
-    let dkdata = obj.datas1[dlen-1];
+    let dkdata = obj.datas1[dlen - 1];
     show_fenshi_chart('chart3', symbol, obj.digits, obj.point, dkdata.time, obj.datas3);
 }
 
-function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
+function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
     reset_element(chartid);
 
-    let barsize = (chartid=='chart1'?8:3.5);
-    let rightspace =  (chartid=='chart1'?5:10);
-    let cHeight = (chartid=='chart1')?(chartHeight-40):(chartHeight+40);
+    let barsize = (chartid == 'chart1' ? 8 : 3.5);
+    let rightspace = (chartid == 'chart1' ? 5 : 10);
+    let cHeight = (chartid == 'chart1') ? (chartHeight - 40) : (chartHeight + 40);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
-    
+
     let candleSeries = chart.addCandlestickSeries({
         upColor: '#ef5350', downColor: '#26a69a',
         borderVisible: false, wickUpColor: '#ef5350',
@@ -112,25 +107,25 @@ function show_candle_chart(chartid, symbol, digits, point, datas,fitContent) {
             precision: digits,
             minMove: point,
         },
-        priceLineVisible:false
+        priceLineVisible: false
     });
     candleSeries.priceScale().applyOptions({
-        autoScale: true, 
+        autoScale: true,
         scaleMargins: {
             top: 0.075,
             bottom: 0.1,
         },
     });
     candleSeries.setData(datas);
-    chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, candleSeries));
-    chart.subscribeClick(clickEvent(symbol,candleSeries));
+    chart.subscribeCrosshairMove(crossMoveEvent(symbol, digits, candleSeries));
+    chart.subscribeClick(clickEvent(symbol, candleSeries));
     setMaLine(datas, 10, chart, '#ffffff', 0);
     setMaLine(datas, 20, chart, '#ff0000', 0);
-   
-    if(chartid=='chart2'){
+
+    if (chartid == 'chart2') {
         setMaLine(datas, 55, chart, '#0099cc', 1);
     }
-    if(fitContent){
+    if (fitContent) {
         chart.timeScale().fitContent();
     }
 }
@@ -140,54 +135,55 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
 
     let barsize = 0;
     let rightspace = 3;
-    let cHeight = chartHeight-135;
-    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize,  rightspace));
+    let cHeight = chartHeight - 135;
+    let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
 
     let datas = getFenshiDatas(dtime, datas3);
     let lineSeries = chart.addLineSeries({
-        lineWidth:0.55,
-        color:'#ffffff',
+        lineWidth: 0.55,
+        color: '#ffffff',
         priceFormat: {
             type: 'price',
             precision: digits,
             minMove: point
         },
-        priceLineVisible:false
+        priceLineVisible: false
     });
     lineSeries.priceScale().applyOptions({
-        autoScale: true, 
+        autoScale: true,
         scaleMargins: {
             top: 0.1,
             bottom: 0.1,
         },
     });
     lineSeries.setData(datas);
-    chart.subscribeCrosshairMove(crossMoveEvent(symbol,digits, lineSeries));
-    chart.subscribeClick(clickEvent(symbol,lineSeries));
+    chart.subscribeCrosshairMove(crossMoveEvent(symbol, digits, lineSeries));
+    chart.subscribeClick(clickEvent(symbol, lineSeries));
 
     setFenshiMaLine(datas, chart, '#ffff99');
     setMaLine(datas, 21, chart, '#cc0000', 0);
     chart.timeScale().fitContent();
 }
 
-function crossMoveEvent(symbol,digits, series){
-    let fun = param=>{
+function crossMoveEvent(symbol, digits, series) {
+    let fun = param => {
         if (!param.point) {
             return;
         }
         const y = param.point.y;
         let price = series.coordinateToPrice(y);
-        updatePrice(symbol, price.toFixed(digits));
+        updateSymbol(symbol);
+        updatePrice(price.toFixed(digits));
     }
     return fun;
 }
 
-function clickEvent(symbol, series){
-    let fun = param=>{
-        if(clickCount==0){
-            clickCount=1;
-            setTimeout(clickDrop,1500);
-        } else if(clickCount==1){
+function clickEvent(symbol, series) {
+    let fun = param => {
+        if (clickCount == 0) {
+            clickCount = 1;
+            setTimeout(clickDrop, 1500);
+        } else if (clickCount == 1) {
             clickCount = 0;
             debug("double click");
             const myPriceLine = {
@@ -204,32 +200,22 @@ function clickEvent(symbol, series){
     return fun;
 }
 
-function getFenshiDatas(dtime, datas){
+function getFenshiDatas(dtime, datas) {
     let ret = [];
     let item;
-    for(i in datas){
+    for (i in datas) {
         item = datas[i];
-        if(isToday(dtime, item.time)){
-            item['value'] =  item.close;//线型图，读取value值，而不是close
+        if (isToday(dtime, item.time)) {
+            item['value'] = item.close;//线型图，读取value值，而不是close
             ret.push(item);
         }
     }
     return ret;
 }
 
-function isToday(dtime,  timestamp){
-    let date = (seriesType==0)?new Date(timestamp*1000-TIME_DELTA_MS):new Date(timestamp*1000);
-    if(date.getFullYear()>=dtime.year 
-    && (date.getMonth()+1)>=dtime.month
-    && date.getDate()>=dtime.day){
-        return true;
-    }
-    return false;
-}
-
-function clickDrop(){
-    if(clickCount>0){
-        clickCount = clickCount-1;
+function clickDrop() {
+    if (clickCount > 0) {
+        clickCount = clickCount - 1;
     }
 }
 
@@ -242,7 +228,7 @@ function setMaLine(datas, count, chart, color, type) {
     smaLine.setData(smaData);
 }
 
-function setFenshiMaLine(datas, chart, color){
+function setFenshiMaLine(datas, chart, color) {
     const smaData = calculateFenshiMA(datas);
     const smaLine = chart.addLineSeries({
         color,
@@ -251,7 +237,7 @@ function setFenshiMaLine(datas, chart, color){
     smaLine.setData(smaData);
 }
 
-function getconfig(width,height,barSpacing, rightOffset) {
+function getconfig(width, height, barSpacing, rightOffset) {
     return {
         width,
         height,
@@ -271,7 +257,7 @@ function getconfig(width,height,barSpacing, rightOffset) {
             rightOffset,
             barSpacing,
             rightBarStaysOnScroll: false,
-            fixLeftEdge:false,
+            fixLeftEdge: false,
             alignLabels: false,
             borderVisible: false,
             tickMarkFormatter: (time, tickMarkType, locale) => {
@@ -308,11 +294,15 @@ function reset_element(id) {
     }
 }
 
-function updatePrice(symbol, price) {
+function updateSymbol(symbol) {
     curSymbol = symbol;
+    $("#symbol").text(symbol);
+}
+
+function updatePrice(price) {
     curPrice = price;
     if (curPrice) {
-        $("#info").text(price);
+        $("#price").text(price);
     }
 }
 
@@ -320,8 +310,8 @@ function next_symbol() {
     if (isloading) {
         return;
     }
-    
-    curPrice=0.0;
+
+    curPrice = 0.0;
     $("#info").text("");
 
     let len = symbols.length
@@ -339,7 +329,7 @@ function pre_symbol() {
         return;
     }
 
-    curPrice=0.0;
+    curPrice = 0.0;
     $("#info").text("");
 
     let len = symbols.length
@@ -351,19 +341,6 @@ function pre_symbol() {
     symbol = symbols[pageIndex];
     load_chart_item(symbol, 'D1');
 }
-
-function handler(e) {
-    if (e.originalType == 'touchstart') {
-        pageScreenX = e.pageX;
-        pageScreenY = e.pageY;
-    } else if (e.originalType == 'touchend') {
-        if (e.pageY - pageScreenY > 100 && (pageScreenX - e.pageX) < 50) {
-            pre_symbol();
-        } else if (pageScreenY - e.pageY > 100 && (pageScreenX - e.pageX) < 50) {
-            next_symbol();
-        }
-    }
-};
 
 function init_touch() {
     $(document).keydown(function (e) {
@@ -389,71 +366,23 @@ function init_touch() {
     $(".chart-container").on("touch_end", handler);
 }
 
-function timestampToString(timestamp) {
-    const date = new Date(timestamp * 1000);
-    const Y = date.getFullYear() + '-';
-    const M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-    const D = date.getDate() + ' ';
-    const h = date.getHours() + ':';
-    const m = date.getMinutes()
-    return M + D + h + m;
-}
-
-function calculateEMA(data, count) {
-    const k = 2 / (count + 1);
-    var avg = function (data, pema) {
-        let ema = data[0].close;
-        for (let i = 1; i < data.length; i++) {
-            ema = (data[i].close * k) + (pema * (1 - k));
+function handler(e) {
+    if (e.originalType == 'touchstart') {
+        pageScreenX = e.pageX;
+        pageScreenY = e.pageY;
+    } else if (e.originalType == 'touchend') {
+        if (e.pageY - pageScreenY > 100 && (pageScreenX - e.pageX) < 50) {
+            pre_symbol();
+        } else if (pageScreenY - e.pageY > 100 && (pageScreenX - e.pageX) < 50) {
+            next_symbol();
         }
-        return ema;
     }
-
-    var result = [];
-    var items = [];
-    var pema = 0.0;
-    for (var i = count - 1, len = data.length; i < len; i++) {
-        items = data.slice(i - count + 1, i);
-        if (pema == 0.0) {
-            pema = items[0].close;
-        }
-        var val = avg(items, pema);
-        pema = val;
-        result.push({ time: data[i].time, value: val });
-    }
-    return result;
 }
 
-function calculateAvg(data){
-    var sum = 0;
-    for (var i = 0; i < data.length; i++) {
-        sum += data[i].close;
-    }
-    return sum / data.length;
-}
-
-function calculateSMA(data, count) {
-    var result = [];
-    for (var i = count - 1, len = data.length; i < len; i++) {
-        var val = calculateAvg(data.slice(i - count + 1, i));
-        result.push({ time: data[i].time, value: val });
-    }
-    return result;
-}
-
-function calculateFenshiMA(data){
-    var result = [];
-    for (var i = 0, len = data.length; i < len; i++) {
-        var val = calculateAvg(data.slice(0, i));
-        result.push({ time: data[i].time, value: val });
-    }
-    return result;
-}
-
-function debug(logString){
-    if(window.ChartObj){
+function debug(logString) {
+    if (window.ChartObj) {
         ChartObj.printLog(logString);
-    }else{
+    } else {
         console.log(logString);
     }
 }
