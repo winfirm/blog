@@ -1,10 +1,9 @@
-name: Winfirm Trade Club
+name: Winfirm
 url: http://trade.youth168.com
 description: None
 
-permalink: /:title.html
+permalink: /:categories/:title.html
 
-#gems: [jekyll-paginate]
 highlighter: pygments
 paginate: 20
 
