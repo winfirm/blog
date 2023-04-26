@@ -21,14 +21,14 @@ color:#f1f1f1;font-size:12px
 	text-align: left;
 }
 
-.price-item{
-	color:#999999;
-	width: 80px;
-
-}
-
 .symbol-item{
 	color:#cc0000;
+	width: 80px;
+	font-weight: bold;
+}
+
+.price-item{
+	color:#999999;
 	width: 80px;
 }
 
@@ -41,6 +41,24 @@ color:#f1f1f1;font-size:12px
 	clear: both;
 	float:left;
 	background-color: black;
+}
+
+.fav_list{
+	position: fixed;
+	left:0px;
+	top:30px;
+	z-index: 200;
+}
+
+.fav_item{
+	clear:both;
+	margin: 6px 5px 0px 0px;
+	color:#ffffff;
+	text-align: center;
+	padding:3px 5px;
+	font-size: 14px;
+	font-weight: bold;
+	background-color:#555555;
 }
 
 .chart-footer{

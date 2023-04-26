@@ -32,8 +32,43 @@ $(function () {
     $(".chart-body").css("width", chartWidth);
 
     init_touch();
+    init_fav_list();
     reload_symbols();
-})
+});
+
+function init_fav_list(){
+    let symbolEle = $("#symbol");
+    symbolEle.click(e=>{
+       let symbol =symbolEle.text();
+       if(isFav(symbol)){
+            removeFav(symbol);
+       }else{
+            addFav(symbol);
+       }
+       show_fav_list();
+    });
+
+    show_fav_list();
+}
+
+function show_fav_list(){
+    let favListEle =  $('#fav_list');
+    favListEle.empty();
+
+    let favEle;
+    for(let index in favList){
+        favEle = document.createElement('div');
+        favEle.setAttribute('class','fav_item');
+        favEle.innerHTML = favList[index];
+        favEle.setAttribute("id", 'favEle_'+index);
+        favListEle.append(favEle);
+
+        $('#favEle_'+index).click(e=>{
+            let symbol = $('#favEle_'+index).text();
+            load_chart_item(symbol, 'D1');
+        })
+    }
+}
 
 function reload_symbols() {
     let url = 'https://www.winfirm.com.cn/serv/chart_symbols';
