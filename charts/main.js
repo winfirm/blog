@@ -1,8 +1,6 @@
 //color http://www.360doc.com/content/14/0329/09/4286573_364621220.shtml
 //chart https://github.com/tradingview/lightweight-charts/blob/master/docs/candlestick-series.md
 
-var charts = [];
-
 var pageScreenX = 0;
 var pageScreenY = 0;
 
