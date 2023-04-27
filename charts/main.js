@@ -130,7 +130,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
 
     let barsize = (chartid == 'chart1' ? 8 : 3.5);
     let rightspace = (chartid == 'chart1' ? 5 : 10);
-    let cHeight = (chartid == 'chart1') ? (chartHeight - 40) : (chartHeight + 40);
+    let cHeight = (chartid == 'chart1') ? (chartHeight - 50) : (chartHeight + 40);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
 
     let candleSeries = chart.addCandlestickSeries({
@@ -141,36 +141,35 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
             type: 'price',
             precision: digits,
             minMove: point,
-        },
-        priceLineVisible: false
+        }
     });
     candleSeries.priceScale().applyOptions({
         autoScale: true,
         scaleMargins: {
             top: 0.075,
             bottom: 0.1,
-        },
+        }
     });
     candleSeries.setData(datas);
     chart.subscribeCrosshairMove(crossMoveEvent(symbol, digits, candleSeries));
     chart.subscribeClick(clickEvent(symbol, candleSeries));
-    setMaLine(datas, 10, chart, '#ffffff', 0);
-    setMaLine(datas, 20, chart, '#ff0000', 0);
 
-    if (chartid == 'chart2') {
+    if (chartid == 'chart1') {
+        setMaLine(datas, 10, chart, '#ffffff', 0);
+        setMaLine(datas, 20, chart, '#ff0000', 0);
+    }else{
+        setMaLine(datas, 10, chart, '#ffffff', 1);
+        setMaLine(datas, 20, chart, '#ff0000', 1);
         setMaLine(datas, 55, chart, '#0099cc', 1);
-    }
-    if (fitContent) {
-        chart.timeScale().fitContent();
     }
 }
 
 function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
     reset_element(chartid);
 
-    let barsize = 0;
-    let rightspace = 3;
-    let cHeight = chartHeight - 135;
+    let barsize = 1.5;
+    let rightspace = 5;
+    let cHeight = chartHeight - 120;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
 
     let datas = getFenshiDatas(dtime, datas3);
@@ -181,8 +180,7 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
             type: 'price',
             precision: digits,
             minMove: point
-        },
-        priceLineVisible: false
+        }
     });
     lineSeries.priceScale().applyOptions({
         autoScale: true,
@@ -196,8 +194,7 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
     chart.subscribeClick(clickEvent(symbol, lineSeries));
 
     setFenshiMaLine(datas, chart, '#ffff99');
-    setMaLine(datas, 21, chart, '#cc0000', 0);
-    chart.timeScale().fitContent();
+    setMaLine(datas, 20, chart, '#cc0000', 0);
 }
 
 function crossMoveEvent(symbol, digits, series) {
@@ -227,7 +224,7 @@ function clickEvent(symbol, series) {
                 lineWidth: 1,
                 lineStyle: 2, // LineStyle.Dashed
                 axisLabelVisible: true,
-                title: 'up',
+                title: 'x',
             };
             series.createPriceLine(myPriceLine);
         }
