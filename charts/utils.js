@@ -18,7 +18,7 @@ function isMobile() {
     return (!!u.match(/AppleWebKit.*Mobile.*/) || u.indexOf('iPad') > -1);
 }
 
-function geIndex(symbols, symbol){
+function getPageIndex(symbols,symbol){
     if(symbols){
         return symbols.indexOf(symbol);
     }

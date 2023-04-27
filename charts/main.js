@@ -8,6 +8,7 @@ var pageScreenY = 0;
 
 var pageIndex = 0;
 var isloading = false
+var symbols = [];
 var symbolsType = 0;
 
 var crossEnable = false;
@@ -65,7 +66,7 @@ function show_fav_list(){
 
         $('#favEle_'+index).click(e=>{
             let symbol = $('#favEle_'+index).text();
-            pageIndex = getIndex(symbols, symbol);
+            pageIndex = getPageIndex(symbols, symbol);
             load_chart_item(symbol, 'D1');
         });
     }
