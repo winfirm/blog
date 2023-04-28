@@ -1,0 +1,84 @@
+body {
+	margin: 0px auto;
+	background-color: black;
+}
+
+a {
+	color: #f1f1f1;
+	font-size: 12px
+}
+
+.chart-container {
+	margin: 0px auto;
+	text-align: center;
+}
+
+.chart-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 120;
+	padding-top: 2px;
+	text-align: left;
+}
+
+.symbol-item {
+	height: 25px;
+	color: #ff0000;
+	width: 100px;
+	font-weight: bold;
+	text-align: center;
+	z-index: 200;
+	text-decoration: underline;
+}
+
+.price-item {
+	color: #999999;
+	width: 80px;
+}
+
+.timeframe-item {
+	margin-right: 65px;
+	float: right;
+	color: #00ffff;
+	z-index: 200;
+	width: 38px;
+	height: 25px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.chart-body {
+	clear: both;
+	margin: 0px auto;
+}
+
+.chart-item {
+	clear: both;
+	float: left;
+	background-color: black;
+}
+
+.fav_list {
+	position: fixed;
+	left: 0px;
+	top: 40px;
+	z-index: 200;
+}
+
+.fav_item {
+	clear: both;
+	margin: 6px 5px 0px 0px;
+	color: #ffffff;
+	text-align: center;
+	padding: 2px 3px;
+	font-size: 14px;
+	background-color: #555;
+	border: #666 1px solid;
+	border-radius: 5px;
+}
+
+.chart-footer {
+	clear: both;
+}
