@@ -172,7 +172,8 @@ function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
     let cHeight = chartHeight - 120;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
 
-    let datas = getFenshiDatas(dtime, datas3);
+    let datas = datas3;
+
     let lineSeries = chart.addLineSeries({
         lineWidth: 0.55,
         color: '#ffffff',
@@ -230,19 +231,6 @@ function clickEvent(symbol, series) {
         }
     }
     return fun;
-}
-
-function getFenshiDatas(dtime, datas) {
-    let ret = [];
-    let item;
-    for (i in datas) {
-        item = datas[i];
-        if (isToday(dtime, item.time)) {
-            item['value'] = item.close;//线型图，读取value值，而不是close
-            ret.push(item);
-        }
-    }
-    return ret;
 }
 
 function clickDrop() {
