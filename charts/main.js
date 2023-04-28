@@ -15,6 +15,7 @@ var chartHeight = 450;
 
 var curSymbol = '';
 var curPrice = 0.0;
+var curTimes = 'D1';
 
 var clickCount = 0;
 var seriesType = 0 //forex:0, futures:1, stock:2
@@ -31,41 +32,53 @@ $(function () {
     $(".chart-body").css("width", chartWidth);
 
     init_touch();
+    init_times();
     init_fav_list();
     reload_symbols();
 });
 
-function init_fav_list(){
+function init_times() {
+    curTimes = getTimeFrame();
+    let timeframeEle = $("#timeframe");
+    timeframeEle.text(curTimes);
+    timeframeEle.click(e => {
+        curTimes = switchTimeFrame();
+        timeframeEle.text(curTimes);
+        load_chart_item(curSymbol);
+    });
+}
+
+function init_fav_list() {
     let symbolEle = $("#symbol");
-    symbolEle.click(e=>{
-       let symbol =symbolEle.text();
-       if(isFav(symbol)){
+    symbolEle.click(e => {
+        let symbol = symbolEle.text();
+        if (isFav(symbol)) {
             removeFav(symbol);
-       }else{
+        } else {
             addFav(symbol);
-       }
-       show_fav_list();
+        }
+        show_fav_list();
     });
 
     show_fav_list();
 }
 
-function show_fav_list(){
-    let favListEle =  $('#fav_list');
+function show_fav_list() {
+    let favListEle = $('#fav_list');
     favListEle.empty();
 
     let favEle;
-    for(let index in favList){
+    for (let index in favList) {
         favEle = document.createElement('div');
-        favEle.setAttribute('class','fav_item');
+        favEle.setAttribute('class', 'fav_item');
         favEle.innerHTML = favList[index];
-        favEle.setAttribute("id", 'favEle_'+index);
+        favEle.setAttribute("id", 'favEle_' + index);
         favListEle.append(favEle);
 
-        $('#favEle_'+index).click(e=>{
-            let symbol = $('#favEle_'+index).text();
+        $('#favEle_' + index).click(e => {
+            let symbol = $('#favEle_' + index).text();
             pageIndex = getPageIndex(symbols, symbol);
-            load_chart_item(symbol, 'D1');
+            load_chart_item(symbol);
         });
     }
 }
@@ -89,15 +102,15 @@ function reload_symbols() {
 function init_charts(symbols) {
     debug('show_charts');
     pageIndex = 0;
-    load_chart_item(symbols[pageIndex], 'D1');
+    load_chart_item(symbols[pageIndex]);
 }
 
-function load_chart_item(symbol, times) {
+function load_chart_item(symbol) {
     if (isloading) {
         return;
     }
     isloading = true;
-    let url = 'https://www.winfirm.com.cn/serv/index_json?symbol=' + symbol + '&times=' + times;
+    let url = 'https://www.winfirm.com.cn/serv/index_json?symbol=' + symbol + '&times=' + curTimes;
     $.ajax({
         type: 'get',
         url: url,
@@ -128,9 +141,9 @@ function set_load_result(result, symbol) {
 function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
     reset_element(chartid);
 
-    let barsize = (chartid == 'chart1' ? 8 : 3.5);
+    let barsize = (chartid == 'chart1' ? 6.18 : 3.82);
     let rightspace = (chartid == 'chart1' ? 5 : 10);
-    let cHeight = (chartid == 'chart1') ? (chartHeight - 50) : (chartHeight + 40);
+    let cHeight = (chartid == 'chart1') ? (chartHeight - 40) : (chartHeight + 30);
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
 
     let candleSeries = chart.addCandlestickSeries({
@@ -146,7 +159,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
     candleSeries.priceScale().applyOptions({
         autoScale: true,
         scaleMargins: {
-            top: 0.075,
+            top: 0.0618,
             bottom: 0.1,
         }
     });
@@ -157,7 +170,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
     if (chartid == 'chart1') {
         setMaLine(datas, 10, chart, '#ffffff', 0);
         setMaLine(datas, 20, chart, '#ff0000', 0);
-    }else{
+    } else {
         setMaLine(datas, 10, chart, '#ffffff', 1);
         setMaLine(datas, 20, chart, '#ff0000', 1);
         setMaLine(datas, 55, chart, '#0099cc', 1);
@@ -167,7 +180,7 @@ function show_candle_chart(chartid, symbol, digits, point, datas, fitContent) {
 function show_fenshi_chart(chartid, symbol, digits, point, dtime, datas3) {
     reset_element(chartid);
 
-    let barsize = 1.5;
+    let barsize = 1.618;
     let rightspace = 5;
     let cHeight = chartHeight - 120;
     let chart = LightweightCharts.createChart(document.getElementById(chartid), getconfig(chartWidth, cHeight, barsize, rightspace));
@@ -341,7 +354,7 @@ function next_symbol() {
         pageIndex = 0;
     }
     symbol = symbols[pageIndex];
-    load_chart_item(symbol, 'D1');
+    load_chart_item(symbol);
 }
 
 function pre_symbol() {
@@ -359,7 +372,7 @@ function pre_symbol() {
         pageIndex = len - 1
     }
     symbol = symbols[pageIndex];
-    load_chart_item(symbol, 'D1');
+    load_chart_item(symbol);
 }
 
 function init_touch() {

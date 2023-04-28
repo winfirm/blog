@@ -21,12 +21,12 @@ function addFav(symbol) {
     updateFavData(favList);
 }
 
-function removeFav(symbol){
+function removeFav(symbol) {
     let ret = [];
     let item;
-    for(let index in favList){
+    for (let index in favList) {
         item = favList[index];
-        if(!(symbol ==item)){
+        if (!(symbol == item)) {
             ret.push(item);
         }
     }
@@ -34,6 +34,25 @@ function removeFav(symbol){
     updateFavData(ret);
 }
 
-function updateFavData(data){
+function updateFavData(data) {
     localStorage.setItem('favlist', JSON.stringify(data));
+}
+
+function getTimeFrame() {
+    let times = localStorage.getItem('times');
+    if (!times) {
+        times = 'D1';
+    }
+    return times;
+}
+
+function switchTimeFrame() {
+    let times = getTimeFrame();
+    if (times == 'D1') {
+        times = 'W1';
+    } else if (times = 'W1') {
+        times = 'D1';
+    }
+    localStorage.setItem('times', times);
+    return times;
 }

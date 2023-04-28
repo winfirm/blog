@@ -25,16 +25,6 @@ function getPageIndex(symbols,symbol){
     return 0;
 }
 
-function isToday(dtime, timestamp) {
-    let date = new Date(timestamp * 1000);
-    if (date.getFullYear() >= dtime.year
-        && (date.getMonth() + 1) >= dtime.month
-        && date.getDate() >= dtime.day) {
-        return true;
-    }
-    return false;
-}
-
 function timestampToString(timestamp) {
     const date = new Date(timestamp * 1000);
     const Y = date.getFullYear() + '-';
