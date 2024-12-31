@@ -1,6 +1,6 @@
 name: Winfirm
 url: https://winfirm.net/blog/
-baseurl: /blog
+baseurl: /
 description: None
 
 permalink: /:title.html
