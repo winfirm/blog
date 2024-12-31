@@ -6,7 +6,7 @@ category: "all"
 tags: [frp , local , public]
 ---
 
-1. on server side
+#### 1. on server side
 download [frp](https://github.com/fatedier/frp/releases) software, use follow to server client：
 ```
 ./frps -c frps.toml
@@ -24,7 +24,7 @@ webServer.user = "admin"
 webServer.password = "admin123456"
 ```
 
-2. on client side
+#### 2. on client side
 
 download frp software, use follow to start client: 
 ```
@@ -45,7 +45,7 @@ localPort = 8080
 customDomains = ["clawserver.winfirm.net"]
 ```
 
-3. access by public
+#### 3. access by public
 
 http://xx.xx.xx.xx:8090
 
