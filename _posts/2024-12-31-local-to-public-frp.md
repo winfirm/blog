@@ -42,7 +42,7 @@ auth.token = "test1234567890"
 name = "web"
 type = "http"
 localPort = 8080 
-customDomains = ["clawserver.winfirm.net"]
+customDomains = ["abc.xyz.com"]
 ```
 
 #### 3. access by public
