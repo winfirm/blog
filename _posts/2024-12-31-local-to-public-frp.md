@@ -7,7 +7,7 @@ tags: [frp , local , public]
 ---
 
 #### 1. on server side
-download [frp](https://github.com/fatedier/frp/releases) software, use follow to server client：
+download [frp](https://github.com/fatedier/frp/releases) software, use follow cmd to server：
 ```
 ./frps -c frps.toml
 ```
@@ -26,7 +26,7 @@ webServer.password = "admin123456"
 
 #### 2. on client side
 
-download frp software, use follow to start client: 
+download frp software, use follow cmd to start client: 
 ```
 ./frpc -c frpc.toml
 ```
