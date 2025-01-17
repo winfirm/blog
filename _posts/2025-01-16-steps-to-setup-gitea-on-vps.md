@@ -15,7 +15,7 @@ sudo useradd -m git
 sudo passwd git
 ```
 
-2.login as git, download bintary file from [relase](https://github.com/go-gitea/gitea/releases) page:
+2.login as git, download binary file from [relase](https://github.com/go-gitea/gitea/releases) page:
 
 ```
 wegt https://github.com/go-gitea/gitea/releases/download/v1.23.1/gitea-1.23.1-linux-amd64
