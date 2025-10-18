@@ -1,1 +1,1 @@
-Personal blog site: https://winfirm.net/blog
+Personal blog site: https://winfirm.top/blog
