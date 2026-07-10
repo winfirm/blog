@@ -12,7 +12,7 @@ A positive-yielding, straightforward method
 repeated a hundred or a thousand times
 can create miracles
 
---The Essence of Trading(交易的本质)
+--The Essence of Trading
  
 
 **认清当下，明确未来，设好退路。**
