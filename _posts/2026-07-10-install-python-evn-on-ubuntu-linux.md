@@ -5,7 +5,7 @@ layout: post
 category: "all"
 tags: ["python","ubuntu"]
 ---
-none python system：
+python not installed：
 ```
 apt update
 apt install python-is-python3
