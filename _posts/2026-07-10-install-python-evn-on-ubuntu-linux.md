@@ -2,6 +2,8 @@
 title: Install python evn on Ubuntu linux
 date: 2026-07-10
 layout: post
+category: "all"
+tags: ["python","ubuntu"]
 ---
 无python环境安装：
 ```
