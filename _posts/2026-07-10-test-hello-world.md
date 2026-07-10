@@ -3,7 +3,7 @@ title: test hello world
 date: 2026-07-10
 layout: post
 category: "all"
-tags: []
+tags: ["test"]
 ---
 请提供您需要我优化的具体文章内容。
 
