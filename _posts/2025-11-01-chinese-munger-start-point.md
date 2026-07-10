@@ -1,84 +1,83 @@
 ---
 layout: post
-title: "查理·芒格的启示：中国人的第一个复利临界点"
+title: "Munger's Insight: The First Compound Interest Threshold for Chinese People"
 date: 2025-11-02 00:00:01
 category: "all"
-tags: [查理·芒格 , munger , start point]
+tags: [Charlie Munger , munger , start point]
 ---
 
-# 查理·芒格的启示：中国人的第一个复利临界点  
+# Munger's Insight: The First Compound Interest Threshold for Chinese People
 
-查理·芒格有句著名的话：  
-> “先攒到你的第一个10万美元，不管怎么做到。”
+Charlie Munger has a famous quote:
+> “First, save up your first $100,000, no matter how you do it.”
 
-这句话并不是在崇拜数字，  
-而是在强调一个心理与财富的拐点——  
-**在那之前，复利几乎无感；跨过去，钱才开始替你干活。**
+This statement is not about worshipping a number,
+but about emphasizing a psychological and wealth inflection point—
+**Before that point, compound interest is almost imperceptible; crossing it, money starts working for you.**
 
-在美国，那是10万美元。  
-而在今天的中国，我们也有属于自己的版本：  
-一个能让你清晰感受到“钱在生钱”的节点。  
+In the United States, that amount is $100,000.
+In China today, we also have our version:
+a node that allows you to clearly feel "money making money."
 
-我称它为：**第一个复利临界点。**
-
----
-
-## 一、什么是复利临界点？  
-
-它是个人财富从“靠劳动增长”  
-转向“靠资本增长”的那一刻。  
-
-判断标准其实很简单：  
-
-> 当你的投资收益，能带来“心理上可感知的现金流”。  
-
-比如，你能靠被动收入支付掉每月几项生活开支，  
-那就是复利开始显形的时刻。  
-
-在这个点之前，你为钱工作；  
-在这个点之后，钱开始为你工作。  
+I call it the: **First Compound Interest Threshold.**
 
 ---
 
-## 二、为什么它重要？  
+## I. What is a Compound Interest Threshold?
 
-因为复利的力量，只有“被感知”之后，  
-你才会真正愿意长期持有、持续投入。  
+It is the moment personal wealth shifts from "growing through labor"
+to "growing through capital."
 
-在没看到成效前，大多数人会中途放弃；  
-而跨过这个临界点，信念会反转——  
-复利不再是概念，而是一种实感。  
+The standard for judgment is actually simple:
 
-这也是芒格所说的“要先攒到第一个10万美元”的心理学根源：  
-**一旦亲眼见到钱在生钱，你的行为模式就会改变。**
+> When your investment returns can generate a "psychologically perceptible cash flow."
 
----
+For example, if you can use passive income to cover several monthly living expenses,
+that is the moment compound interest becomes visible.
 
-## 三、以现实为参照  
-
-假设当前银行理财年化收益约在 **2.5%～3%** 之间，  
-若希望每月获得约 **3000 元** 的被动收入（年收益 3.6 万元），  
-所需本金为：
-
-| 年化收益率 | 所需本金 |
-|-------------|----------|
-| 2.5% | 144 万元 |
-| 3.0% | 120 万元 |
-
-这意味着，在武汉这样的二线城市，  
-**120～150 万元人民币**，  
-大致就是普通人迈入“复利可感知阶段”的门槛。  
-
-放到全国范围：
-
-| 城市类型 | 复利临界点（约） | 说明 |
-|-----------|------------------|------|
-| 小县城 | 80～100 万元 | 覆盖基本生活支出 |
-| 武汉 / 成都 / 杭州 | 120～150 万元 | 产生明显安全感 |
-| 北上广深 | 200～300 万元 | 感知延后、压力更高 |
+Before this point, you work for money;
+after this point, money starts working for you.
 
 ---
 
-💡 **一句话总结：**  
-> 当你的本金能稳定地产生、并让你心理上“有实感”的现金流时，  
-> 那就是你人生复利的第一个转折点。  
+## II. Why is it important?
+
+Because the power of compound interest, only once "perceived,"
+will you truly be willing to hold long-term and continue investing.
+
+Before seeing results, most people will give up midway;
+but crossing this threshold, the belief flips—
+compound interest is no longer a concept, but a tangible reality.
+
+This is the psychological root of Munger's advice to "first save up $100,000":
+**Once you see money making money with your own eyes, your behavioral pattern will change.**
+
+---
+
+## III. Referring to Reality
+
+Assume the current bank wealth management annual yield is approximately between **2.5% to 3%**,
+if you hope to obtain about **3000 RMB** in passive income per month (annual yield of 36,000 RMB).
+The required principal is:
+
+| Annual Yield Rate | Required Principal |
+|-------------------|---------------------|
+| 2.5%              | 1.44 Million RMB |
+| 3.0%              | 1.20 Million RMB |
+
+This means that in a second-tier city like Wuhan,
+**1.2 to 1.5 Million RMB** is roughly the threshold for ordinary people to enter the "perceptible compound interest phase."
+
+Across the national scope:
+
+| City Type | Compound Interest Threshold (Approx.) | Description |
+|-----------|---------------------------------------|-------------|
+| Small County | 80 to 100 Million RMB | Covers basic living expenses |
+| Wuhan / Chengdu / Hangzhou | 120 to 150 Million RMB | Generates a clear sense of security |
+| Beijing / Shanghai / Shenzhen | 200 to 300 Million RMB | Perceived delay, higher pressure |
+
+---
+
+💡 **One-Sentence Summary:**
+> When your principal can stably generate a cash flow that gives you a psychological "sense of reality,"
+> that is the turning point of your life's compound interest.
