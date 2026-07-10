@@ -1,5 +1,5 @@
 ---
-title: test
+title: test hello world
 date: 2026-07-10
 layout: post
 category: "all"
