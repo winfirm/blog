@@ -5,7 +5,7 @@ layout: post
 category: "all"
 tags: ["python","ubuntu"]
 ---
-无python环境安装：
+none python system：
 ```
 apt update
 apt install python-is-python3
@@ -13,7 +13,7 @@ apt install python3-pip
 apt install python3.12-venv
 ```
 
-创建虚拟环境：
+create virtual environment：
 ```
 python3 -m venv venv
 source venv/bin/activate
